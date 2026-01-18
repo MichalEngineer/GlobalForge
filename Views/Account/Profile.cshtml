@@ -1,0 +1,228 @@
+@model GlobalForge.Web.ViewModels.EditProfileViewModel
+@{
+    ViewData["Title"] = "Mój profil";
+}
+
+<div class="profile-page">
+    <div class="container-custom py-5">
+        <div class="row">
+            <div class="col-lg-3 col-md-4 mb-4">
+                <div class="profile-sidebar">
+                    <div class="profile-avatar">
+                        <i class="bi bi-person-circle"></i>
+                    </div>
+                    <h5 class="profile-name">@(User.Identity?.Name ?? "Użytkownik")</h5>
+                    <div class="profile-menu">
+                        <a asp-action="Profile" class="profile-menu-item active">
+                            <i class="bi bi-person"></i> Dane osobowe
+                        </a>
+                        <a asp-action="ChangePassword" class="profile-menu-item">
+                            <i class="bi bi-key"></i> Zmiana hasła
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-9 col-md-8">
+                <div class="profile-content">
+                    <div class="profile-header">
+                        <h2 class="profile-title">
+                            <i class="bi bi-person-badge me-2"></i>Dane osobowe
+                        </h2>
+                        <p class="profile-subtitle">Zaktualizuj swoje informacje profilowe</p>
+                    </div>
+
+                    <form asp-action="Profile" method="post" class="profile-form">
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+                        
+                        <div class="form-section">
+                            <h5 class="section-subtitle-small">
+                                <i class="bi bi-person-circle me-2"></i>Informacje podstawowe
+                            </h5>
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label asp-for="FirstName" class="form-label">
+                                            <i class="bi bi-person me-1"></i> Imię
+                                        </label>
+                                        <input asp-for="FirstName" class="form-control form-control-modern" />
+                                        <span asp-validation-for="FirstName" class="text-danger small"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label asp-for="LastName" class="form-label">
+                                            <i class="bi bi-person me-1"></i> Nazwisko
+                                        </label>
+                                        <input asp-for="LastName" class="form-control form-control-modern" />
+                                        <span asp-validation-for="LastName" class="text-danger small"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="Email" class="form-label">
+                                    <i class="bi bi-envelope me-1"></i> Email
+                                </label>
+                                <input asp-for="Email" class="form-control form-control-modern" />
+                                <span asp-validation-for="Email" class="text-danger small"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="PhoneNumber" class="form-label">
+                                    <i class="bi bi-telephone me-1"></i> Numer telefonu
+                                </label>
+                                <input asp-for="PhoneNumber" class="form-control form-control-modern" />
+                                <span asp-validation-for="PhoneNumber" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        <div class="form-section">
+                            <h5 class="section-subtitle-small">
+                                <i class="bi bi-geo-alt me-2"></i>Adres
+                            </h5>
+                            
+                            <div class="form-group">
+                                <label asp-for="Address" class="form-label">Ulica i numer</label>
+                                <input asp-for="Address" class="form-control form-control-modern" />
+                                <span asp-validation-for="Address" class="text-danger small"></span>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-5">
+                                    <div class="form-group">
+                                        <label asp-for="City" class="form-label">Miasto</label>
+                                        <input asp-for="City" class="form-control form-control-modern" />
+                                        <span asp-validation-for="City" class="text-danger small"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label asp-for="PostalCode" class="form-label">Kod pocztowy</label>
+                                        <input asp-for="PostalCode" class="form-control form-control-modern" />
+                                        <span asp-validation-for="PostalCode" class="text-danger small"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label asp-for="Country" class="form-label">Kraj</label>
+                                        <input asp-for="Country" class="form-control form-control-modern" />
+                                        <span asp-validation-for="Country" class="text-danger small"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary-custom">
+                                <i class="bi bi-check-circle me-2"></i>Zapisz zmiany
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="list-group">
+                <a asp-action="Profile" class="list-group-item list-group-item-action active">
+                    <i class="bi bi-person"></i> Dane osobowe
+                </a>
+                <a asp-action="ChangePassword" class="list-group-item list-group-item-action">
+                    <i class="bi bi-key"></i> Zmiana hasła
+                </a>
+            </div>
+        </div>
+
+        <div class="col-md-9">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="mb-0">@ViewData["Title"]</h2>
+                </div>
+                <div class="card-body">
+                    @if (TempData["SuccessMessage"] != null)
+                    {
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            @TempData["SuccessMessage"]
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    }
+
+                    <form asp-action="Profile" method="post">
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="FirstName" class="form-label"></label>
+                                <input asp-for="FirstName" class="form-control" />
+                                <span asp-validation-for="FirstName" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="LastName" class="form-label"></label>
+                                <input asp-for="LastName" class="form-control" />
+                                <span asp-validation-for="LastName" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Email" class="form-label"></label>
+                            <input asp-for="Email" class="form-control" />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="PhoneNumber" class="form-label"></label>
+                            <input asp-for="PhoneNumber" class="form-control" />
+                            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                        </div>
+
+                        <hr />
+                        <h5>Adres dostawy</h5>
+                        
+                        <div class="mb-3">
+                            <label asp-for="Address" class="form-label"></label>
+                            <input asp-for="Address" class="form-control" />
+                            <span asp-validation-for="Address" class="text-danger"></span>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="City" class="form-label"></label>
+                                <input asp-for="City" class="form-control" />
+                                <span asp-validation-for="City" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="PostalCode" class="form-label"></label>
+                                <input asp-for="PostalCode" class="form-control" />
+                                <span asp-validation-for="PostalCode" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Country" class="form-label"></label>
+                            <input asp-for="Country" class="form-control" />
+                            <span asp-validation-for="Country" class="text-danger"></span>
+                        </div>
+
+                        <div class="d-grid gap-2 mt-4">
+                            <button type="submit" class="btn btn-primary btn-lg">Zapisz zmiany</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

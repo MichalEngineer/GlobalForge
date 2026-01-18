@@ -1,0 +1,982 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<!-- Hero Section -->
+<section class="hero-section">
+  <div class="hero-content">
+    <div class="hero-text">
+      <h1 class="hero-title">Welcome to <span class="highlight">GlobalForge</span></h1>
+      <p class="hero-subtitle">Your ultimate marketplace solution</p>
+      <div class="hero-buttons">
+        <a asp-controller="Account" asp-action="Register" class="btn-primary">Get Started</a>
+        <a asp-controller="Account" asp-action="Login" class="btn-secondary">Login</a>
+      </div>
+    </div>
+    <div class="hero-image">
+      <div class="image-container">
+        <svg class="hero-img" viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+          <rect fill="#42b983" opacity="0.1" width="400" height="300" rx="12"/>
+          <circle cx="200" cy="150" r="80" fill="#42b983" opacity="0.2"/>
+          <rect x="120" y="100" width="160" height="100" rx="8" fill="#42b983" opacity="0.3"/>
+          <path d="M150 120 L180 150 L250 80" stroke="white" stroke-width="4" fill="none" stroke-linecap="round"/>
+        </svg>
+        <div class="hero-accent"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Value Proposition -->
+<section class="value-section">
+  <div class="value-content">
+    <div class="value-image">
+      <div class="image-container">
+        <svg class="value-img" viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+          <rect fill="#f7fafc" width="400" height="300" rx="12"/>
+          <rect x="50" y="50" width="300" height="40" rx="4" fill="#42b983" opacity="0.2"/>
+          <rect x="50" y="110" width="200" height="30" rx="4" fill="#42b983" opacity="0.15"/>
+          <rect x="50" y="160" width="250" height="30" rx="4" fill="#42b983" opacity="0.15"/>
+          <circle cx="320" cy="240" r="30" fill="#42b983" opacity="0.3"/>
+          <path d="M310 240 L317 247 L330 234" stroke="white" stroke-width="3" fill="none"/>
+        </svg>
+        <div class="value-accent"></div>
+      </div>
+    </div>
+    <div class="value-text">
+      <div class="section-badge">Core Benefits</div>
+      <h2 class="section-title">Streamline Your Shopping</h2>
+      <p class="section-description">GlobalForge provides powerful tools to discover products, connect with sellers, and track your orders in real-time.</p>
+      <ul class="value-list">
+        <li class="value-item">Intuitive product browsing</li>
+        <li class="value-item">Secure transactions</li>
+        <li class="value-item">Real-time order tracking</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- Features Section -->
+<section class="features-section">
+  <div class="section-header">
+    <div class="section-badge center-badge">What We Offer</div>
+    <h2 class="section-title center">Powerful Features</h2>
+    <p class="section-subtitle center">Everything you need for a seamless marketplace experience</p>
+  </div>
+  
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon">
+        <svg class="feature-img" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="50" cy="50" r="45" fill="#42b983" opacity="0.1"/>
+          <rect x="25" y="30" width="50" height="40" rx="4" fill="#42b983" opacity="0.3"/>
+          <circle cx="35" cy="45" r="5" fill="white"/>
+          <circle cx="65" cy="45" r="5" fill="white"/>
+          <path d="M35 60 Q50 70 65 60" stroke="white" stroke-width="3" fill="none"/>
+        </svg>
+      </div>
+      <h3 class="feature-title">Intuitive Interface</h3>
+      <p class="feature-description">Simple, clean design that helps you focus on what matters most.</p>
+    </div>
+    
+    <div class="feature-card">
+      <div class="feature-icon">
+        <svg class="feature-img" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="50" cy="50" r="45" fill="#42b983" opacity="0.1"/>
+          <circle cx="35" cy="40" r="12" fill="#42b983" opacity="0.3"/>
+          <circle cx="65" cy="40" r="12" fill="#42b983" opacity="0.3"/>
+          <path d="M25 60 Q35 70 50 65 Q65 70 75 60" stroke="#42b983" stroke-width="4" fill="none"/>
+        </svg>
+      </div>
+      <h3 class="feature-title">Seller Collaboration</h3>
+      <p class="feature-description">Connect seamlessly with verified sellers and buyers.</p>
+    </div>
+    
+    <div class="feature-card">
+      <div class="feature-icon">
+        <svg class="feature-img" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="50" cy="50" r="45" fill="#42b983" opacity="0.1"/>
+          <rect x="25" y="25" width="50" height="50" rx="4" fill="#42b983" opacity="0.2"/>
+          <line x1="35" y1="40" x2="65" y2="40" stroke="#42b983" stroke-width="3"/>
+          <line x1="35" y1="50" x2="55" y2="50" stroke="#42b983" stroke-width="3"/>
+          <line x1="35" y1="60" x2="60" y2="60" stroke="#42b983" stroke-width="3"/>
+        </svg>
+      </div>
+      <h3 class="feature-title">Advanced Analytics</h3>
+      <p class="feature-description">Get insights into your purchases and sales performance.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Testimonials Section -->
+<section class="testimonials-section">
+  <div class="section-header">
+    <div class="section-badge center-badge">User Stories</div>
+    <h2 class="section-title center">What Our Users Say</h2>
+    <p class="section-subtitle center">Don't take our word for it - hear from our community</p>
+  </div>
+  
+  <div class="testimonial-container">
+    <button class="nav-arrow left" onclick="prevTestimonial()">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+    
+    <div class="testimonial-slide">
+      <div class="testimonial-card">
+        <div class="testimonial-quote">"</div>
+        <p class="testimonial-text" id="testimonial-text">GlobalForge made selling my products so much easier. The interface is clean and the buyers are trustworthy!</p>
+        <div class="testimonial-divider"></div>
+        <div class="testimonial-footer">
+          <div class="testimonial-avatar">
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="50" cy="50" r="50" fill="#42b983"/>
+              <circle cx="50" cy="40" r="15" fill="white"/>
+              <ellipse cx="50" cy="75" rx="25" ry="20" fill="white"/>
+            </svg>
+          </div>
+          <div class="testimonial-user">
+            <h3 class="testimonial-name" id="testimonial-name">Anna Kowalska</h3>
+            <div class="testimonial-rating" id="testimonial-rating">★★★★★</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <button class="nav-arrow right" onclick="nextTestimonial()">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <path d="M9 6L15 12L9 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+  </div>
+  
+  <div class="testimonial-dots" id="testimonial-dots"></div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section">
+  <div class="cta-background"></div>
+  <div class="cta-content">
+    <h2 class="cta-title">Ready to start your marketplace journey?</h2>
+    <p class="cta-text">Join thousands of buyers and sellers already using GlobalForge</p>
+    <a asp-controller="Account" asp-action="Register" class="btn-primary large">Start for Free</a>
+  </div>
+</section>
+
+@section Scripts {
+<script>
+  const testimonials = [
+    {
+      name: "Anna Kowalska",
+      text: "GlobalForge made selling my products so much easier. The interface is clean and the buyers are trustworthy!",
+      rating: "★★★★★"
+    },
+    {
+      name: "Jan Nowak",
+      text: "Best marketplace I've used. Fast shipping, great customer service, and amazing product variety.",
+      rating: "★★★★★"
+    },
+    {
+      name: "Maria Wiśniewska",
+      text: "I love how easy it is to find unique products here. The seller rating system gives me confidence!",
+      rating: "★★★★☆"
+    },
+    {
+      name: "Piotr Zieliński",
+      text: "As a seller, GlobalForge has helped me reach customers I never would have found otherwise.",
+      rating: "★★★★★"
+    }
+  ];
+
+  let currentTestimonial = 0;
+
+  function updateTestimonial() {
+    document.getElementById('testimonial-text').textContent = testimonials[currentTestimonial].text;
+    document.getElementById('testimonial-name').textContent = testimonials[currentTestimonial].name;
+    document.getElementById('testimonial-rating').textContent = testimonials[currentTestimonial].rating;
+    
+    const dots = document.querySelectorAll('.dot');
+    dots.forEach((dot, index) => {
+      dot.classList.toggle('active', index === currentTestimonial);
+    });
+  }
+
+  function nextTestimonial() {
+    currentTestimonial = (currentTestimonial + 1) % testimonials.length;
+    updateTestimonial();
+  }
+
+  function prevTestimonial() {
+    currentTestimonial = (currentTestimonial - 1 + testimonials.length) % testimonials.length;
+    updateTestimonial();
+  }
+
+  // Initialize dots
+  document.addEventListener('DOMContentLoaded', function() {
+    const dotsContainer = document.getElementById('testimonial-dots');
+    testimonials.forEach((_, index) => {
+      const dot = document.createElement('span');
+      dot.className = 'dot' + (index === 0 ? ' active' : '');
+      dot.onclick = () => {
+        currentTestimonial = index;
+        updateTestimonial();
+      };
+      dotsContainer.appendChild(dot);
+    });
+  });
+</script>
+}
+
+<style>
+.home-page {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #2d3748;
+}
+
+/* Section Badge */
+.section-badge {
+  display: inline-block;
+  background-color: rgba(66, 185, 131, 0.1);
+  color: #42b983;
+  font-weight: 600;
+  font-size: 0.875rem;
+  padding: 6px 12px;
+  border-radius: 20px;
+  margin-bottom: 15px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.center-badge {
+  margin-left: auto;
+  margin-right: auto;
+  display: table;
+}
+
+.section-header {
+  margin-bottom: 50px;
+}
+
+/* Hero Section */
+.hero-section {
+  background-color: #1a202c;
+  background-image: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
+  padding: 100px 20px;
+  color: white;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-section::before {
+  content: '';
+  position: absolute;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  background: rgba(66, 185, 131, 0.05);
+  top: -150px;
+  right: -150px;
+}
+
+.hero-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 60px;
+  position: relative;
+  z-index: 1;
+}
+
+.hero-text {
+  flex: 1;
+}
+
+.hero-title {
+  font-size: 3.5rem;
+  font-weight: 800;
+  margin-bottom: 20px;
+  line-height: 1.1;
+  letter-spacing: -0.5px;
+}
+
+.highlight {
+  color: #42b983;
+  text-shadow: 0 2px 10px rgba(66, 185, 131, 0.3);
+  position: relative;
+}
+
+.highlight::after {
+  content: '';
+  position: absolute;
+  bottom: 5px;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background-color: rgba(66, 185, 131, 0.3);
+  border-radius: 2px;
+}
+
+.hero-subtitle {
+  font-size: 1.5rem;
+  margin-bottom: 40px;
+  color: #cbd5e0;
+  line-height: 1.5;
+}
+
+.hero-buttons {
+  display: flex;
+  gap: 20px;
+}
+
+.btn-primary {
+  background-color: #42b983;
+  color: white;
+  padding: 14px 28px;
+  border-radius: 8px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(66, 185, 131, 0.3);
+  position: relative;
+  overflow: hidden;
+  display: inline-block;
+}
+
+.btn-primary::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: rgba(255, 255, 255, 0.1);
+  transform: rotate(45deg);
+  opacity: 0;
+  transition: all 0.6s ease;
+}
+
+.btn-primary:hover {
+  background-color: #369f73;
+  transform: translateY(-2px);
+  color: white;
+  text-decoration: none;
+}
+
+.btn-primary:hover::after {
+  opacity: 1;
+  top: -100%;
+  left: -100%;
+}
+
+.btn-secondary {
+  border: 2px solid #42b983;
+  color: #42b983;
+  padding: 14px 28px;
+  border-radius: 8px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  display: inline-block;
+}
+
+.btn-secondary:hover {
+  background-color: rgba(66, 185, 131, 0.1);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(66, 185, 131, 0.1);
+  color: #42b983;
+  text-decoration: none;
+}
+
+.hero-image {
+  flex: 1;
+}
+
+.image-container {
+  position: relative;
+  z-index: 1;
+}
+
+.hero-img {
+  width: 100%;
+  border-radius: 12px;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+  transition: all 0.5s ease;
+}
+
+.hero-accent {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 12px;
+  background: linear-gradient(140deg, rgba(66, 185, 131, 0.2) 0%, rgba(66, 185, 131, 0) 50%);
+  top: 15px;
+  left: 15px;
+  z-index: -1;
+}
+
+/* Value Section */
+.value-section {
+  padding: 100px 20px;
+  background-color: #f7fafc;
+  position: relative;
+  overflow: hidden;
+}
+
+.value-section::after {
+  content: '';
+  position: absolute;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  background: rgba(66, 185, 131, 0.05);
+  bottom: -150px;
+  left: -150px;
+}
+
+.value-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 60px;
+  position: relative;
+  z-index: 1;
+}
+
+.value-image {
+  flex: 1;
+}
+
+.value-img {
+  width: 100%;
+  max-width: 450px;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  transition: all 0.5s ease;
+}
+
+.value-accent {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 12px;
+  background: linear-gradient(140deg, rgba(66, 185, 131, 0.2) 0%, rgba(66, 185, 131, 0) 50%);
+  top: 15px;
+  left: 15px;
+  z-index: -1;
+}
+
+.value-text {
+  flex: 1;
+}
+
+.section-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+  color: #2d3748;
+  line-height: 1.2;
+  letter-spacing: -0.5px;
+}
+
+.center {
+  text-align: center;
+}
+
+.section-description {
+  font-size: 1.2rem;
+  line-height: 1.7;
+  margin-bottom: 30px;
+  color: #4a5568;
+}
+
+.value-list {
+  list-style-type: none;
+  padding: 0;
+  margin-top: 30px;
+}
+
+.value-item {
+  padding: 12px 0;
+  padding-left: 35px;
+  position: relative;
+  font-size: 1.1rem;
+  margin-bottom: 12px;
+  transition: all 0.3s ease;
+}
+
+.value-item::before {
+  content: "✓";
+  color: white;
+  background-color: #42b983;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  left: 0;
+  font-weight: bold;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+}
+
+.value-item:hover {
+  transform: translateX(5px);
+}
+
+.value-item:hover::before {
+  transform: scale(1.1);
+}
+
+/* Features Section */
+.features-section {
+  padding: 100px 20px;
+  background-color: white;
+  position: relative;
+}
+
+.features-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    radial-gradient(circle at 10% 10%, rgba(66, 185, 131, 0.03) 0%, transparent 20%),
+    radial-gradient(circle at 90% 90%, rgba(66, 185, 131, 0.03) 0%, transparent 20%);
+  opacity: 0.7;
+}
+
+.section-subtitle {
+  font-size: 1.3rem;
+  color: #718096;
+  margin-bottom: 50px;
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.features-grid {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 40px;
+  position: relative;
+  z-index: 1;
+}
+
+.feature-card {
+  background-color: #f7fafc;
+  border-radius: 16px;
+  padding: 40px 30px;
+  text-align: center;
+  transition: all 0.4s ease;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(203, 213, 224, 0.5);
+}
+
+.feature-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background-color: #42b983;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s ease;
+}
+
+.feature-card:hover {
+  transform: translateY(-12px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.08);
+  border-color: transparent;
+}
+
+.feature-card:hover::before {
+  transform: scaleX(1);
+}
+
+.feature-icon {
+  margin-bottom: 25px;
+  position: relative;
+  display: inline-block;
+}
+
+.feature-icon::after {
+  content: '';
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  background-color: rgba(66, 185, 131, 0.1);
+  border-radius: 50%;
+  bottom: -10px;
+  right: -10px;
+  z-index: -1;
+}
+
+.feature-img {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  border: 4px solid white;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.feature-title {
+  font-size: 1.6rem;
+  font-weight: 600;
+  margin-bottom: 15px;
+  color: #2d3748;
+}
+
+.feature-description {
+  color: #718096;
+  line-height: 1.7;
+  font-size: 1.05rem;
+}
+
+/* Testimonials Section */
+.testimonials-section {
+  padding: 100px 20px;
+  background-color: #f7fafc;
+  position: relative;
+  overflow: hidden;
+}
+
+.testimonials-section::before {
+  content: '';
+  position: absolute;
+  width: 400px;
+  height: 400px;
+  border-radius: 50%;
+  background: rgba(66, 185, 131, 0.05);
+  top: -200px;
+  right: -200px;
+}
+
+.testimonial-container {
+  max-width: 800px;
+  margin: 50px auto;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.testimonial-slide {
+  width: 100%;
+  padding: 0 50px;
+}
+
+.testimonial-card {
+  background-color: white;
+  border-radius: 20px;
+  padding: 50px 40px;
+  text-align: center;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06);
+  transition: all 0.3s ease;
+  position: relative;
+  border: 1px solid rgba(203, 213, 224, 0.5);
+}
+
+.testimonial-quote {
+  font-size: 4rem;
+  line-height: 1;
+  color: #42b983;
+  font-family: Georgia, serif;
+  position: absolute;
+  top: 20px;
+  left: 30px;
+  opacity: 0.2;
+}
+
+.testimonial-text {
+  font-size: 1.2rem;
+  line-height: 1.8;
+  color: #4a5568;
+  font-style: italic;
+  margin-bottom: 25px;
+  position: relative;
+  z-index: 1;
+}
+
+.testimonial-divider {
+  width: 60px;
+  height: 3px;
+  background-color: #42b983;
+  margin: 0 auto 25px;
+  border-radius: 3px;
+}
+
+.testimonial-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+}
+
+.testimonial-avatar {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  border: 3px solid #42b983;
+  box-shadow: 0 5px 15px rgba(66, 185, 131, 0.2);
+  overflow: hidden;
+}
+
+.testimonial-avatar svg {
+  width: 100%;
+  height: 100%;
+}
+
+.testimonial-user {
+  text-align: left;
+}
+
+.testimonial-name {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #2d3748;
+  margin-bottom: 5px;
+}
+
+.testimonial-rating {
+  color: #fbbf24;
+  font-size: 1rem;
+}
+
+.nav-arrow {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 10px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: white;
+  color: #42b983;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+}
+
+.nav-arrow:hover {
+  background-color: #42b983;
+  color: white;
+  transform: translateY(-50%) scale(1.1);
+}
+
+.nav-arrow.left {
+  left: 0;
+}
+
+.nav-arrow.right {
+  right: 0;
+}
+
+.testimonial-dots {
+  display: flex;
+  justify-content: center;
+  margin-top: 30px;
+  gap: 10px;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: #cbd5e0;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+}
+
+.dot.active {
+  background-color: #42b983;
+  transform: scale(1.2);
+}
+
+.dot:hover {
+  transform: scale(1.2);
+  border-color: #42b983;
+}
+
+/* CTA Section */
+.cta-section {
+  padding: 100px 20px;
+  background-color: #42b983;
+  color: white;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.cta-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 25%),
+    radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 25%);
+}
+
+.cta-content {
+  position: relative;
+  z-index: 1;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.cta-title {
+  font-size: 2.6rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.cta-text {
+  font-size: 1.3rem;
+  margin-bottom: 40px;
+  opacity: 0.9;
+}
+
+.btn-primary.large {
+  padding: 16px 40px;
+  font-size: 1.1rem;
+  border-radius: 8px;
+  background-color: white;
+  color: #42b983;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  border: none;
+}
+
+.btn-primary.large:hover {
+  background-color: #f7fafc;
+  color: #369f73;
+}
+
+/* Responsive Design */
+@@media (max-width: 992px) {
+  .hero-title {
+    font-size: 2.8rem;
+  }
+  
+  .section-title {
+    font-size: 2.2rem;
+  }
+  
+  .cta-title {
+    font-size: 2.2rem;
+  }
+}
+
+@@media (max-width: 768px) {
+  .hero-content,
+  .value-content {
+    flex-direction: column;
+    text-align: center;
+    gap: 40px;
+  }
+  
+  .hero-section,
+  .value-section,
+  .features-section,
+  .testimonials-section,
+  .cta-section {
+    padding: 70px 20px;
+  }
+  
+  .hero-buttons {
+    justify-content: center;
+  }
+  
+  .value-text {
+    text-align: center;
+  }
+  
+  .value-item {
+    text-align: left;
+  }
+  
+  .hero-title {
+    font-size: 2.5rem;
+  }
+  
+  .hero-subtitle {
+    font-size: 1.2rem;
+  }
+  
+  .section-title {
+    font-size: 2rem;
+  }
+  
+  .testimonial-card {
+    padding: 40px 30px;
+  }
+  
+  .testimonial-quote {
+    font-size: 3rem;
+  }
+}
+
+@@media (max-width: 600px) {
+  .testimonial-card {
+    padding: 35px 25px;
+  }
+  
+  .testimonial-slide {
+    padding: 0 35px;
+  }
+  
+  .nav-arrow {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .hero-title {
+    font-size: 2.2rem;
+  }
+
+  .section-title {
+    font-size: 1.8rem;
+  }
+  
+  .feature-card {
+    padding: 30px 25px;
+  }
+  
+  .btn-primary, .btn-secondary {
+    padding: 12px 24px;
+    font-size: 0.9rem;
+  }
+  
+  .btn-primary.large {
+    padding: 14px 35px;
+  }
+  
+  .testimonial-footer {
+    flex-direction: column;
+  }
+  
+  .testimonial-user {
+    text-align: center;
+  }
+}
+</style>
