@@ -1,0 +1,396 @@
+@model IEnumerable<GlobalForge.Web.Models.Product>
+
+@{
+    ViewData["Title"] = "Moje Produkty";
+}
+
+<div class="my-products-page">
+    <div class="container-custom">
+        <div class="page-header">
+            <h1 class="page-title">
+                <i class="bi bi-shop-window"></i>
+                Panel Sprzedawcy
+            </h1>
+            <a asp-action="Create" class="btn-add-product">
+                <i class="bi bi-plus-circle"></i>
+                Dodaj produkt
+            </a>
+        </div>
+
+        @if (Model != null && Model.Any())
+        {
+            <div class="products-table-container">
+                <table class="products-table">
+                    <thead>
+                        <tr>
+                            <th>Zdjęcie</th>
+                            <th>Nazwa</th>
+                            <th>Kategoria</th>
+                            <th>Cena</th>
+                            <th>Ilość</th>
+                            <th>Stan</th>
+                            <th>Status</th>
+                            <th>Akcje</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var product in Model)
+                        {
+                            <tr>
+                                <td>
+                                    <div class="table-image">
+                                        @if (!string.IsNullOrEmpty(product.ImageUrl))
+                                        {
+                                            <img src="@product.ImageUrl" alt="@product.Name">
+                                        }
+                                        else
+                                        {
+                                            <div class="table-placeholder">
+                                                <i class="bi bi-image"></i>
+                                            </div>
+                                        }
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="product-name-table">@product.Name</span>
+                                </td>
+                                <td>
+                                    <span class="category-badge">@product.Category.Name</span>
+                                </td>
+                                <td>
+                                    <span class="price-table">@product.Price.ToString("C") PLN</span>
+                                </td>
+                                <td>
+                                    <span class="quantity-table">@product.Quantity szt.</span>
+                                </td>
+                                <td>
+                                    @if (product.Condition == "New")
+                                    {
+                                        <span class="badge-small badge-new">Nowy</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge-small badge-used">Używany</span>
+                                    }
+                                </td>
+                                <td>
+                                    @if (product.IsActive)
+                                    {
+                                        <span class="status-badge status-active">Aktywny</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="status-badge status-inactive">Nieaktywny</span>
+                                    }
+                                </td>
+                                <td>
+                                    <div class="table-actions">
+                                        <a asp-action="Details" asp-route-id="@product.Id" class="btn-action btn-view" title="Zobacz">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                        <a asp-action="Edit" asp-route-id="@product.Id" class="btn-action btn-edit" title="Edytuj">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <form asp-action="Delete" asp-route-id="@product.Id" method="post" style="display:inline;" 
+                                              onsubmit="return confirm('Czy na pewno chcesz usunąć ten produkt?');">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="btn-action btn-delete" title="Usuń">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="no-products-seller">
+                <i class="bi bi-inbox"></i>
+                <h3>Nie masz jeszcze żadnych produktów</h3>
+                <p>Dodaj swój pierwszy produkt i zacznij sprzedawać!</p>
+                <a asp-action="Create" class="btn-primary-large">
+                    <i class="bi bi-plus-circle"></i>
+                    Dodaj pierwszy produkt
+                </a>
+            </div>
+        }
+    </div>
+</div>
+
+@section Styles {
+<style>
+.my-products-page {
+    padding: 40px 0;
+    background: #f7fafc;
+    min-height: calc(100vh - 200px);
+}
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 32px;
+}
+
+.page-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1a202c;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.page-title i {
+    color: #42b983;
+}
+
+.btn-add-product {
+    padding: 12px 24px;
+    background: #42b983;
+    color: white;
+    border-radius: 8px;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s;
+}
+
+.btn-add-product:hover {
+    background: #369f73;
+    color: white;
+}
+
+.products-table-container {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    overflow: hidden;
+}
+
+.products-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.products-table thead {
+    background: linear-gradient(135deg, #42b983 0%, #369f73 100%);
+}
+
+.products-table th {
+    padding: 16px;
+    text-align: left;
+    color: white;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.products-table tbody tr {
+    border-bottom: 1px solid #e2e8f0;
+    transition: background 0.2s;
+}
+
+.products-table tbody tr:hover {
+    background: #f7fafc;
+}
+
+.products-table td {
+    padding: 16px;
+    vertical-align: middle;
+}
+
+.table-image {
+    width: 60px;
+    height: 60px;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.table-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.table-placeholder {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.table-placeholder i {
+    color: white;
+    font-size: 1.5rem;
+    opacity: 0.5;
+}
+
+.product-name-table {
+    font-weight: 600;
+    color: #2d3748;
+}
+
+.category-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    background: #e6fffa;
+    color: #42b983;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.price-table {
+    font-weight: 700;
+    color: #42b983;
+    font-size: 1.125rem;
+}
+
+.quantity-table {
+    color: #4a5568;
+}
+
+.badge-small {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.status-badge {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.status-active {
+    background: #d4edda;
+    color: #155724;
+}
+
+.status-inactive {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.table-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-action {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+}
+
+.btn-view {
+    background: #bee3f8;
+    color: #2c5282;
+}
+
+.btn-view:hover {
+    background: #90cdf4;
+}
+
+.btn-edit {
+    background: #fef5e7;
+    color: #975A16;
+}
+
+.btn-edit:hover {
+    background: #fce181;
+}
+
+.btn-delete {
+    background: #fed7d7;
+    color: #c53030;
+}
+
+.btn-delete:hover {
+    background: #fc8181;
+}
+
+.no-products-seller {
+    text-align: center;
+    padding: 80px 20px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.no-products-seller i {
+    font-size: 5rem;
+    color: #cbd5e0;
+    margin-bottom: 20px;
+}
+
+.no-products-seller h3 {
+    font-size: 1.5rem;
+    color: #2d3748;
+    margin-bottom: 12px;
+}
+
+.no-products-seller p {
+    color: #718096;
+    margin-bottom: 24px;
+}
+
+.btn-primary-large {
+    padding: 14px 28px;
+    background: #42b983;
+    color: white;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 16px;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s;
+}
+
+.btn-primary-large:hover {
+    background: #369f73;
+    color: white;
+}
+
+@@media (max-width: 1200px) {
+    .products-table-container {
+        overflow-x: auto;
+    }
+    
+    .products-table {
+        min-width: 900px;
+    }
+}
+
+@@media (max-width: 768px) {
+    .page-header {
+        flex-direction: column;
+        gap: 16px;
+        align-items: stretch;
+    }
+    
+    .btn-add-product {
+        justify-content: center;
+    }
+}
+</style>
+}

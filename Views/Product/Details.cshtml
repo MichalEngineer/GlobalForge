@@ -1,0 +1,385 @@
+@model GlobalForge.Web.Models.Product
+
+@{
+    ViewData["Title"] = Model.Name;
+}
+
+<div class="product-details-page">
+    <div class="container-custom">
+        <a asp-action="Index" class="back-link">
+            <i class="bi bi-arrow-left"></i>
+            Powrót do katalogu
+        </a>
+
+        <div class="product-details">
+            <div class="product-gallery">
+                @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                {
+                    <img src="@Model.ImageUrl" alt="@Model.Name" class="product-main-image">
+                }
+                else
+                {
+                    <div class="product-placeholder-large">
+                        <i class="bi bi-image"></i>
+                        <p>Brak zdjęcia</p>
+                    </div>
+                }
+            </div>
+
+            <div class="product-main-info">
+                <div class="product-header-details">
+                    <h1 class="product-title-details">@Model.Name</h1>
+                    @if (Model.Condition == "New")
+                    {
+                        <span class="badge-detail badge-new">Nowy</span>
+                    }
+                    else
+                    {
+                        <span class="badge-detail badge-used">Używany</span>
+                    }
+                </div>
+
+                <div class="product-price-box">
+                    <span class="price-label">Cena:</span>
+                    <span class="price-value">@Model.Price.ToString("C") PLN</span>
+                </div>
+
+                <div class="product-meta">
+                    <div class="meta-item">
+                        <i class="bi bi-tag"></i>
+                        <span>Kategoria: <strong>@Model.Category.Name</strong></span>
+                    </div>
+                    <div class="meta-item">
+                        <i class="bi bi-box"></i>
+                        <span>Dostępność: <strong>@Model.Quantity szt.</strong></span>
+                    </div>
+                    <div class="meta-item">
+                        <i class="bi bi-person"></i>
+                        <span>Sprzedawca: <strong>@Model.Seller.FirstName @Model.Seller.LastName</strong></span>
+                    </div>
+                    <div class="meta-item">
+                        <i class="bi bi-calendar"></i>
+                        <span>Dodano: <strong>@Model.CreatedAt.ToString("dd.MM.yyyy")</strong></span>
+                    </div>
+                </div>
+
+                <div class="product-actions">
+                    <button class="btn-add-cart">
+                        <i class="bi bi-cart-plus"></i>
+                        Dodaj do koszyka
+                    </button>
+                    <button class="btn-contact">
+                        <i class="bi bi-envelope"></i>
+                        Kontakt ze sprzedawcą
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="product-description-section">
+            <h2 class="section-title">
+                <i class="bi bi-file-text"></i>
+                Opis produktu
+            </h2>
+            <div class="description-content">
+                @Model.Description
+            </div>
+        </div>
+
+        @if (Model.Reviews != null && Model.Reviews.Any())
+        {
+            <div class="reviews-section">
+                <h2 class="section-title">
+                    <i class="bi bi-star"></i>
+                    Opinie (@Model.Reviews.Count)
+                </h2>
+                <div class="reviews-list">
+                    @foreach (var review in Model.Reviews.OrderByDescending(r => r.CreatedAt))
+                    {
+                        <div class="review-item">
+                            <div class="review-header">
+                                <div class="reviewer-info">
+                                    <i class="bi bi-person-circle"></i>
+                                    <span class="reviewer-name">@review.User.FirstName @review.User.LastName</span>
+                                </div>
+                                <div class="review-rating">
+                                    @for (int i = 0; i < review.Rating; i++)
+                                    {
+                                        <i class="bi bi-star-fill"></i>
+                                    }
+                                    @for (int i = review.Rating; i < 5; i++)
+                                    {
+                                        <i class="bi bi-star"></i>
+                                    }
+                                </div>
+                            </div>
+                            <p class="review-comment">@review.Comment</p>
+                            <span class="review-date">@review.CreatedAt.ToString("dd.MM.yyyy HH:mm")</span>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@section Styles {
+<style>
+.product-details-page {
+    padding: 40px 0;
+    background: #f7fafc;
+    min-height: calc(100vh - 200px);
+}
+
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #42b983;
+    font-weight: 600;
+    text-decoration: none;
+    margin-bottom: 24px;
+    transition: all 0.2s;
+}
+
+.back-link:hover {
+    color: #369f73;
+}
+
+.product-details {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    background: white;
+    padding: 32px;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    margin-bottom: 32px;
+}
+
+.product-gallery {
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.product-main-image {
+    width: 100%;
+    height: 500px;
+    object-fit: cover;
+}
+
+.product-placeholder-large {
+    width: 100%;
+    height: 500px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.product-placeholder-large i {
+    font-size: 6rem;
+    color: white;
+    opacity: 0.3;
+    margin-bottom: 16px;
+}
+
+.product-placeholder-large p {
+    color: white;
+    font-size: 1.25rem;
+    opacity: 0.7;
+}
+
+.product-header-details {
+    display: flex;
+    align-items: start;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.product-title-details {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1a202c;
+    flex: 1;
+}
+
+.badge-detail {
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.product-price-box {
+    background: linear-gradient(135deg, #42b983 0%, #369f73 100%);
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 24px;
+}
+
+.price-label {
+    color: rgba(255,255,255,0.9);
+    font-size: 14px;
+    display: block;
+    margin-bottom: 4px;
+}
+
+.price-value {
+    color: white;
+    font-size: 2.5rem;
+    font-weight: 700;
+}
+
+.product-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 32px;
+    padding: 20px;
+    background: #f7fafc;
+    border-radius: 12px;
+}
+
+.meta-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 15px;
+    color: #4a5568;
+}
+
+.meta-item i {
+    color: #42b983;
+    font-size: 1.25rem;
+}
+
+.product-actions {
+    display: flex;
+    gap: 12px;
+}
+
+.btn-add-cart, .btn-contact {
+    flex: 1;
+    padding: 14px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 15px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.btn-add-cart {
+    background: #42b983;
+    color: white;
+}
+
+.btn-add-cart:hover {
+    background: #369f73;
+}
+
+.btn-contact {
+    background: #e2e8f0;
+    color: #2d3748;
+}
+
+.btn-contact:hover {
+    background: #cbd5e0;
+}
+
+.product-description-section, .reviews-section {
+    background: white;
+    padding: 32px;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    margin-bottom: 32px;
+}
+
+.section-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1a202c;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.section-title i {
+    color: #42b983;
+}
+
+.description-content {
+    font-size: 15px;
+    line-height: 1.8;
+    color: #4a5568;
+}
+
+.reviews-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.review-item {
+    padding: 20px;
+    background: #f7fafc;
+    border-radius: 12px;
+}
+
+.review-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.reviewer-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.reviewer-info i {
+    font-size: 1.5rem;
+    color: #42b983;
+}
+
+.reviewer-name {
+    font-weight: 600;
+    color: #2d3748;
+}
+
+.review-rating {
+    color: #fbbf24;
+}
+
+.review-comment {
+    color: #4a5568;
+    line-height: 1.6;
+    margin-bottom: 8px;
+}
+
+.review-date {
+    font-size: 13px;
+    color: #a0aec0;
+}
+
+@@media (max-width: 968px) {
+    .product-details {
+        grid-template-columns: 1fr;
+    }
+    
+    .product-actions {
+        flex-direction: column;
+    }
+}
+</style>
+}

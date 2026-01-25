@@ -1,0 +1,426 @@
+@model IEnumerable<GlobalForge.Web.Models.Product>
+
+@{
+    ViewData["Title"] = "Katalog Produktów";
+    var categories = ViewBag.Categories as List<GlobalForge.Web.Models.Category>;
+    var selectedCategoryId = ViewBag.SelectedCategoryId as int?;
+    var searchQuery = ViewBag.SearchQuery as string;
+}
+
+<div class="products-page">
+    <div class="container-custom">
+        <!-- Header -->
+        <div class="page-header">
+            <h1 class="page-title">
+                <i class="bi bi-shop"></i>
+                Katalog Produktów
+            </h1>
+            <p class="page-subtitle">Przeglądaj tysiące ofert od sprzedawców z całego świata</p>
+        </div>
+
+        <!-- Filters -->
+        <div class="filters-section">
+            <form asp-action="Index" method="get" class="filters-form">
+                <div class="filter-group">
+                    <label for="searchQuery" class="filter-label">
+                        <i class="bi bi-search"></i> Szukaj
+                    </label>
+                    <input type="text" 
+                           id="searchQuery" 
+                           name="searchQuery" 
+                           value="@searchQuery" 
+                           class="form-control-modern" 
+                           placeholder="Wpisz nazwę produktu...">
+                </div>
+
+                <div class="filter-group">
+                    <label for="categoryId" class="filter-label">
+                        <i class="bi bi-tag"></i> Kategoria
+                    </label>
+                    <select id="categoryId" name="categoryId" class="form-control-modern">
+                        <option value="">Wszystkie kategorie</option>
+                        @if (categories != null)
+                        {
+                            foreach (var category in categories)
+                            {
+                                <option value="@category.Id" selected="@(selectedCategoryId == category.Id)">
+                                    @category.Name
+                                </option>
+                            }
+                        }
+                    </select>
+                </div>
+
+                <div class="filter-actions">
+                    <button type="submit" class="btn-filter">
+                        <i class="bi bi-funnel"></i>
+                        Filtruj
+                    </button>
+                    <a asp-action="Index" class="btn-clear">
+                        <i class="bi bi-x-circle"></i>
+                        Wyczyść
+                    </a>
+                </div>
+            </form>
+        </div>
+
+        <!-- Products Grid -->
+        @if (Model != null && Model.Any())
+        {
+            <div class="products-grid">
+                @foreach (var product in Model)
+                {
+                    <div class="product-card">
+                        <a asp-action="Details" asp-route-id="@product.Id" class="product-link">
+                            <div class="product-image">
+                                @if (!string.IsNullOrEmpty(product.ImageUrl))
+                                {
+                                    <img src="@product.ImageUrl" alt="@product.Name">
+                                }
+                                else
+                                {
+                                    <div class="product-placeholder">
+                                        <i class="bi bi-image"></i>
+                                    </div>
+                                }
+                                <div class="product-badges">
+                                    @if (product.Condition == "New")
+                                    {
+                                        <span class="badge badge-new">Nowy</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge badge-used">Używany</span>
+                                    }
+                                </div>
+                            </div>
+
+                            <div class="product-info">
+                                <h3 class="product-name">@product.Name</h3>
+                                <p class="product-category">
+                                    <i class="bi bi-tag"></i>
+                                    @product.Category.Name
+                                </p>
+                                <p class="product-description">
+                                    @if (product.Description.Length > 100)
+                                    {
+                                        @(product.Description.Substring(0, 100) + "...")
+                                    }
+                                    else
+                                    {
+                                        @product.Description
+                                    }
+                                </p>
+                                <div class="product-footer">
+                                    <span class="product-price">@product.Price.ToString("C") PLN</span>
+                                    <span class="product-quantity">
+                                        <i class="bi bi-box"></i>
+                                        @product.Quantity szt.
+                                    </span>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="no-products">
+                <i class="bi bi-inbox"></i>
+                <h3>Brak produktów</h3>
+                <p>Nie znaleziono produktów spełniających kryteria wyszukiwania.</p>
+                <a asp-action="Index" class="btn-primary">
+                    <i class="bi bi-arrow-clockwise"></i>
+                    Pokaż wszystkie produkty
+                </a>
+            </div>
+        }
+    </div>
+</div>
+
+@section Styles {
+<style>
+.products-page {
+    padding: 40px 0;
+    background: #f7fafc;
+    min-height: calc(100vh - 200px);
+}
+
+.page-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.page-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #1a202c;
+    margin-bottom: 12px;
+}
+
+.page-title i {
+    color: #42b983;
+    margin-right: 12px;
+}
+
+.page-subtitle {
+    font-size: 1.125rem;
+    color: #718096;
+}
+
+.filters-section {
+    background: white;
+    padding: 24px;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    margin-bottom: 32px;
+}
+
+.filters-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr auto;
+    gap: 16px;
+    align-items: end;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.filter-label {
+    font-weight: 600;
+    color: #2d3748;
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+.filter-label i {
+    color: #42b983;
+    margin-right: 6px;
+}
+
+.filter-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-filter, .btn-clear {
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+    font-size: 14px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    text-decoration: none;
+}
+
+.btn-filter {
+    background: #42b983;
+    color: white;
+}
+
+.btn-filter:hover {
+    background: #369f73;
+}
+
+.btn-clear {
+    background: #e2e8f0;
+    color: #4a5568;
+}
+
+.btn-clear:hover {
+    background: #cbd5e0;
+}
+
+.products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 24px;
+}
+
+.product-card {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    transition: all 0.3s;
+}
+
+.product-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+}
+
+.product-link {
+    text-decoration: none;
+    color: inherit;
+}
+
+.product-image {
+    position: relative;
+    width: 100%;
+    height: 220px;
+    overflow: hidden;
+    background: #f7fafc;
+}
+
+.product-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.product-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.product-placeholder i {
+    font-size: 4rem;
+    color: white;
+    opacity: 0.3;
+}
+
+.product-badges {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    display: flex;
+    gap: 8px;
+}
+
+.badge {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.badge-new {
+    background: #42b983;
+    color: white;
+}
+
+.badge-used {
+    background: #ed8936;
+    color: white;
+}
+
+.product-info {
+    padding: 16px;
+}
+
+.product-name {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: #1a202c;
+    margin-bottom: 8px;
+    line-height: 1.4;
+}
+
+.product-category {
+    font-size: 13px;
+    color: #42b983;
+    margin-bottom: 12px;
+    font-weight: 600;
+}
+
+.product-category i {
+    margin-right: 4px;
+}
+
+.product-description {
+    font-size: 14px;
+    color: #718096;
+    line-height: 1.6;
+    margin-bottom: 16px;
+}
+
+.product-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 12px;
+    border-top: 1px solid #e2e8f0;
+}
+
+.product-price {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #42b983;
+}
+
+.product-quantity {
+    font-size: 14px;
+    color: #718096;
+}
+
+.product-quantity i {
+    margin-right: 4px;
+}
+
+.no-products {
+    text-align: center;
+    padding: 80px 20px;
+}
+
+.no-products i {
+    font-size: 5rem;
+    color: #cbd5e0;
+    margin-bottom: 20px;
+}
+
+.no-products h3 {
+    font-size: 1.5rem;
+    color: #2d3748;
+    margin-bottom: 12px;
+}
+
+.no-products p {
+    color: #718096;
+    margin-bottom: 24px;
+}
+
+.btn-primary {
+    padding: 12px 24px;
+    background: #42b983;
+    color: white;
+    border-radius: 8px;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s;
+}
+
+.btn-primary:hover {
+    background: #369f73;
+    color: white;
+}
+
+@@media (max-width: 768px) {
+    .filters-form {
+        grid-template-columns: 1fr;
+    }
+    
+    .page-title {
+        font-size: 2rem;
+    }
+    
+    .products-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+}

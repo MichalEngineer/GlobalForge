@@ -1,0 +1,414 @@
+@model GlobalForge.Web.ViewModels.ProductViewModel
+
+@{
+    ViewData["Title"] = "Edytuj Produkt";
+    var categories = ViewBag.Categories as List<GlobalForge.Web.Models.Category>;
+}
+
+<div class="product-form-page">
+    <div class="container-custom">
+        <a asp-action="MyProducts" class="back-link">
+            <i class="bi bi-arrow-left"></i>
+            Powrót do moich produktów
+        </a>
+
+        <div class="form-container">
+            <div class="form-header">
+                <h1 class="form-title">
+                    <i class="bi bi-pencil-square"></i>
+                    Edytuj Produkt
+                </h1>
+                <p class="form-subtitle">Zaktualizuj informacje o produkcie</p>
+            </div>
+
+            <form asp-action="Edit" method="post" enctype="multipart/form-data" class="product-form">
+                @Html.AntiForgeryToken()
+                <input type="hidden" asp-for="Id" />
+                <input type="hidden" asp-for="ImageUrl" />
+                <div asp-validation-summary="ModelOnly" class="validation-summary"></div>
+
+                <div class="form-row">
+                    <div class="form-group-full">
+                        <label asp-for="Name" class="form-label-modern">
+                            <i class="bi bi-tag"></i>
+                            Nazwa produktu *
+                        </label>
+                        <input asp-for="Name" class="form-control-modern" placeholder="Np. iPhone 14 Pro">
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group-half">
+                        <label asp-for="CategoryId" class="form-label-modern">
+                            <i class="bi bi-folder"></i>
+                            Kategoria *
+                        </label>
+                        <select asp-for="CategoryId" class="form-control-modern">
+                            <option value="">Wybierz kategorię</option>
+                            @if (categories != null)
+                            {
+                                foreach (var category in categories)
+                                {
+                                    <option value="@category.Id" selected="@(Model.CategoryId == category.Id)">
+                                        @category.Name
+                                    </option>
+                                }
+                            }
+                        </select>
+                        <span asp-validation-for="CategoryId" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group-half">
+                        <label asp-for="Condition" class="form-label-modern">
+                            <i class="bi bi-shield-check"></i>
+                            Stan *
+                        </label>
+                        <select asp-for="Condition" class="form-control-modern">
+                            <option value="New">Nowy</option>
+                            <option value="Used">Używany</option>
+                        </select>
+                        <span asp-validation-for="Condition" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group-half">
+                        <label asp-for="Price" class="form-label-modern">
+                            <i class="bi bi-currency-dollar"></i>
+                            Cena (PLN) *
+                        </label>
+                        <input asp-for="Price" type="number" step="0.01" class="form-control-modern" placeholder="0.00">
+                        <span asp-validation-for="Price" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group-half">
+                        <label asp-for="Quantity" class="form-label-modern">
+                            <i class="bi bi-box"></i>
+                            Ilość *
+                        </label>
+                        <input asp-for="Quantity" type="number" class="form-control-modern" placeholder="1">
+                        <span asp-validation-for="Quantity" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group-full">
+                        <label asp-for="Description" class="form-label-modern">
+                            <i class="bi bi-file-text"></i>
+                            Opis *
+                        </label>
+                        <textarea asp-for="Description" rows="6" class="form-control-modern" placeholder="Opisz szczegółowo swój produkt..."></textarea>
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group-full">
+                        <label class="form-label-modern">
+                            <i class="bi bi-image"></i>
+                            Obecne zdjęcie
+                        </label>
+                        @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                        {
+                            <div class="current-image">
+                                <img src="@Model.ImageUrl" alt="Obecne zdjęcie">
+                            </div>
+                        }
+                        else
+                        {
+                            <p class="no-image-text">Brak zdjęcia</p>
+                        }
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group-full">
+                        <label asp-for="ImageFile" class="form-label-modern">
+                            <i class="bi bi-cloud-upload"></i>
+                            Zmień zdjęcie (opcjonalne)
+                        </label>
+                        <div class="file-input-wrapper">
+                            <input asp-for="ImageFile" type="file" accept="image/*" class="file-input" id="imageFile">
+                            <label for="imageFile" class="file-label">
+                                <i class="bi bi-cloud-upload"></i>
+                                <span class="file-text">Wybierz nowe zdjęcie</span>
+                            </label>
+                        </div>
+                        <span asp-validation-for="ImageFile" class="text-danger"></span>
+                        <small class="form-help">Zostaw puste aby zachować obecne zdjęcie. Max: 5MB</small>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group-full">
+                        <label class="form-label-modern checkbox-label">
+                            <input asp-for="IsActive" type="checkbox" class="form-checkbox">
+                            <span>Produkt aktywny (widoczny dla kupujących)</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-submit">
+                        <i class="bi bi-check-circle"></i>
+                        Zapisz zmiany
+                    </button>
+                    <a asp-action="MyProducts" class="btn-cancel">
+                        <i class="bi bi-x-circle"></i>
+                        Anuluj
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.getElementById('imageFile').addEventListener('change', function(e) {
+            const fileName = e.target.files[0]?.name;
+            const fileText = document.querySelector('.file-text');
+            if (fileName) {
+                fileText.textContent = fileName;
+            }
+        });
+    </script>
+}
+
+@section Styles {
+<style>
+.product-form-page {
+    padding: 40px 0;
+    background: #f7fafc;
+    min-height: calc(100vh - 200px);
+}
+
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #42b983;
+    font-weight: 600;
+    text-decoration: none;
+    margin-bottom: 24px;
+    transition: all 0.2s;
+}
+
+.back-link:hover {
+    color: #369f73;
+}
+
+.form-container {
+    max-width: 800px;
+    margin: 0 auto;
+    background: white;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.form-header {
+    text-align: center;
+    margin-bottom: 32px;
+}
+
+.form-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1a202c;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+}
+
+.form-title i {
+    color: #42b983;
+}
+
+.form-subtitle {
+    color: #718096;
+    font-size: 15px;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.form-group-full {
+    grid-column: 1 / -1;
+}
+
+.form-group-half {
+    grid-column: span 1;
+}
+
+.form-label-modern {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    color: #2d3748;
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+.form-label-modern i {
+    color: #42b983;
+}
+
+.current-image {
+    width: 200px;
+    height: 200px;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 2px solid #e2e8f0;
+}
+
+.current-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.no-image-text {
+    color: #a0aec0;
+    font-style: italic;
+}
+
+.file-input-wrapper {
+    position: relative;
+}
+
+.file-input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.file-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 16px;
+    border: 2px dashed #cbd5e0;
+    border-radius: 8px;
+    background: #f7fafc;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.file-label:hover {
+    border-color: #42b983;
+    background: #e6fffa;
+}
+
+.file-label i {
+    font-size: 1.5rem;
+    color: #42b983;
+}
+
+.file-text {
+    color: #4a5568;
+    font-weight: 600;
+}
+
+.form-help {
+    display: block;
+    margin-top: 6px;
+    color: #a0aec0;
+    font-size: 13px;
+}
+
+.checkbox-label {
+    display: flex !important;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+}
+
+.form-checkbox {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    accent-color: #42b983;
+}
+
+.form-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 32px;
+}
+
+.btn-submit, .btn-cancel {
+    flex: 1;
+    padding: 14px 28px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 15px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    text-decoration: none;
+}
+
+.btn-submit {
+    background: #42b983;
+    color: white;
+}
+
+.btn-submit:hover {
+    background: #369f73;
+}
+
+.btn-cancel {
+    background: #e2e8f0;
+    color: #2d3748;
+}
+
+.btn-cancel:hover {
+    background: #cbd5e0;
+}
+
+.validation-summary {
+    background: #fed7d7;
+    color: #c53030;
+    padding: 16px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.text-danger {
+    display: block;
+    color: #e53e3e;
+    font-size: 13px;
+    margin-top: 4px;
+}
+
+@@media (max-width: 768px) {
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .form-group-half {
+        grid-column: 1;
+    }
+    
+    .form-container {
+        padding: 24px;
+    }
+}
+</style>
+}
