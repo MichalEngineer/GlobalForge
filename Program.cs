@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using GlobalForge.Web.Data;
 using GlobalForge.Web.Models;
+using GlobalForge.Web.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -49,6 +50,12 @@ builder.Services.AddSession(options =>
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });
+
+// Rejestracja HttpContextAccessor dla CartService
+builder.Services.AddHttpContextAccessor();
+
+// Rejestracja CartService
+builder.Services.AddScoped<ICartService, CartService>();
 
 var app = builder.Build();
 

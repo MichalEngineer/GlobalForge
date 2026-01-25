@@ -51,6 +51,39 @@
                     </select>
                 </div>
 
+                <div class="filter-group filter-group-wide">
+                    <label class="filter-label">
+                        <i class="bi bi-currency-dollar"></i> Zakres ceny
+                    </label>
+                    <div class="price-range-container">
+                        <div class="price-inputs">
+                            <input type="number" id="minPrice" name="minPrice" value="@ViewBag.MinPrice" class="form-control-modern price-input" placeholder="Min" min="0" step="0.01">
+                            <span class="price-separator">-</span>
+                            <input type="number" id="maxPrice" name="maxPrice" value="@ViewBag.MaxPrice" class="form-control-modern price-input" placeholder="Max" min="0" step="0.01">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="filter-group">
+                    <label class="filter-label">
+                        <i class="bi bi-box-seam"></i> Stan
+                    </label>
+                    <div class="condition-filters">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="conditionNew" name="condition" value="New" @(ViewBag.ConditionNew == true ? "checked" : "")>
+                            <label class="form-check-label" for="conditionNew">
+                                Nowy
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="conditionUsed" name="condition" value="Used" @(ViewBag.ConditionUsed == true ? "checked" : "")>
+                            <label class="form-check-label" for="conditionUsed">
+                                Używany
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="filter-actions">
                     <button type="submit" class="btn-filter">
                         <i class="bi bi-funnel"></i>
@@ -179,7 +212,7 @@
 
 .filters-form {
     display: grid;
-    grid-template-columns: 1fr 1fr auto;
+    grid-template-columns: 1fr 1fr 1.5fr 1fr auto;
     gap: 16px;
     align-items: end;
 }
@@ -187,6 +220,52 @@
 .filter-group {
     display: flex;
     flex-direction: column;
+}
+
+.filter-group-wide {
+    grid-column: span 1;
+}
+
+.price-range-container {
+    width: 100%;
+}
+
+.price-inputs {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.price-input {
+    flex: 1;
+    min-width: 0;
+}
+
+.price-separator {
+    color: #718096;
+    font-weight: 600;
+}
+
+.condition-filters {
+    display: flex;
+    gap: 16px;
+}
+
+.form-check {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.form-check-input {
+    cursor: pointer;
+}
+
+.form-check-label {
+    cursor: pointer;
+    margin: 0;
+    font-size: 14px;
+    color: #2d3748;
 }
 
 .filter-label {
@@ -412,6 +491,15 @@
 @@media (max-width: 768px) {
     .filters-form {
         grid-template-columns: 1fr;
+    }
+    
+    .filter-group-wide {
+        grid-column: span 1;
+    }
+    
+    .condition-filters {
+        flex-direction: column;
+        align-items: flex-start;
     }
     
     .page-title {

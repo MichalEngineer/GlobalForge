@@ -1,0 +1,308 @@
+@model GlobalForge.Web.Models.Cart
+@{
+    ViewData["Title"] = "Koszyk";
+}
+
+<div class="container my-5">
+    <h1 class="mb-4">
+        <i class="bi bi-cart3 me-2"></i>Koszyk zakupowy
+    </h1>
+
+    @if (Model.Items.Count == 0)
+    {
+        <div class="alert alert-info text-center py-5">
+            <i class="bi bi-cart-x" style="font-size: 3rem;"></i>
+            <h4 class="mt-3">Twój koszyk jest pusty</h4>
+            <p class="text-muted">Dodaj produkty do koszyka, aby kontynuować zakupy</p>
+            <a href="@Url.Action("Index", "Product")" class="btn btn-success mt-3">
+                <i class="bi bi-shop me-1"></i>Przejdź do katalogu
+            </a>
+        </div>
+    }
+    else
+    {
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="card shadow-sm mb-4">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table align-middle">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th style="width: 100px;">Zdjęcie</th>
+                                        <th>Produkt</th>
+                                        <th style="width: 120px;">Cena</th>
+                                        <th style="width: 150px;">Ilość</th>
+                                        <th style="width: 120px;">Razem</th>
+                                        <th style="width: 60px;"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.Items)
+                                    {
+                                        <tr data-product-id="@item.ProductId">
+                                            <td>
+                                                @if (!string.IsNullOrEmpty(item.ImageUrl))
+                                                {
+                                                    <img src="@item.ImageUrl" alt="@item.ProductName" class="img-thumbnail" style="width: 80px; height: 80px; object-fit: cover;">
+                                                }
+                                                else
+                                                {
+                                                    <div class="bg-light d-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
+                                                        <i class="bi bi-image text-muted"></i>
+                                                    </div>
+                                                }
+                                            </td>
+                                            <td>
+                                                <h6 class="mb-0">@item.ProductName</h6>
+                                                <small class="text-muted">Dostępne: @item.AvailableStock szt.</small>
+                                            </td>
+                                            <td>
+                                                <strong>@item.Price.ToString("C", new System.Globalization.CultureInfo("pl-PL"))</strong>
+                                            </td>
+                                            <td>
+                                                <div class="input-group input-group-sm" style="width: 130px;">
+                                                    <button class="btn btn-outline-secondary btn-decrease" type="button" data-product-id="@item.ProductId">
+                                                        <i class="bi bi-dash"></i>
+                                                    </button>
+                                                    <input type="number" class="form-control text-center quantity-input" 
+                                                           value="@item.Quantity" 
+                                                           min="1" 
+                                                           max="@item.AvailableStock" 
+                                                           data-product-id="@item.ProductId">
+                                                    <button class="btn btn-outline-secondary btn-increase" type="button" data-product-id="@item.ProductId" data-max="@item.AvailableStock">
+                                                        <i class="bi bi-plus"></i>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <strong class="item-total">@item.TotalPrice.ToString("C", new System.Globalization.CultureInfo("pl-PL"))</strong>
+                                            </td>
+                                            <td>
+                                                <button class="btn btn-sm btn-outline-danger btn-remove" data-product-id="@item.ProductId" title="Usuń">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="mt-3">
+                            <button class="btn btn-outline-secondary" id="btn-clear-cart">
+                                <i class="bi bi-trash me-1"></i>Wyczyść koszyk
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="card shadow-sm sticky-top" style="top: 20px;">
+                    <div class="card-body">
+                        <h5 class="card-title mb-3">Podsumowanie</h5>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Liczba produktów:</span>
+                            <strong id="cart-items-count">@Model.TotalItems</strong>
+                        </div>
+                        <hr>
+                        <div class="d-flex justify-content-between mb-3">
+                            <h5>Razem:</h5>
+                            <h5 class="text-success" id="cart-total">@Model.TotalAmount.ToString("C", new System.Globalization.CultureInfo("pl-PL"))</h5>
+                        </div>
+                        <a href="@Url.Action("Index", "Checkout")" class="btn btn-success w-100 mb-2">
+                            <i class="bi bi-credit-card me-1"></i>Przejdź do kasy
+                        </a>
+                        <a href="@Url.Action("Index", "Product")" class="btn btn-outline-secondary w-100">
+                            <i class="bi bi-arrow-left me-1"></i>Kontynuuj zakupy
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Zmniejsz ilość
+            $('.btn-decrease').click(function() {
+                var productId = $(this).data('product-id');
+                var input = $(`.quantity-input[data-product-id="${productId}"]`);
+                var currentValue = parseInt(input.val());
+                if (currentValue > 1) {
+                    updateQuantity(productId, currentValue - 1);
+                }
+            });
+
+            // Zwiększ ilość
+            $('.btn-increase').click(function() {
+                var productId = $(this).data('product-id');
+                var maxValue = parseInt($(this).data('max'));
+                var input = $(`.quantity-input[data-product-id="${productId}"]`);
+                var currentValue = parseInt(input.val());
+                if (currentValue < maxValue) {
+                    updateQuantity(productId, currentValue + 1);
+                } else {
+                    showToast('Osiągnięto maksymalną dostępną ilość', 'warning');
+                }
+            });
+
+            // Zmiana ilości w polu tekstowym
+            $('.quantity-input').change(function() {
+                var productId = $(this).data('product-id');
+                var newValue = parseInt($(this).val());
+                var maxValue = parseInt($(`.btn-increase[data-product-id="${productId}"]`).data('max'));
+                
+                if (isNaN(newValue) || newValue < 1) {
+                    $(this).val(1);
+                    newValue = 1;
+                } else if (newValue > maxValue) {
+                    $(this).val(maxValue);
+                    newValue = maxValue;
+                    showToast('Osiągnięto maksymalną dostępną ilość', 'warning');
+                }
+                
+                updateQuantity(productId, newValue);
+            });
+
+            // Usuń produkt
+            $('.btn-remove').click(function() {
+                var productId = $(this).data('product-id');
+                if (confirm('Czy na pewno chcesz usunąć ten produkt z koszyka?')) {
+                    removeItem(productId);
+                }
+            });
+
+            // Wyczyść koszyk
+            $('#btn-clear-cart').click(function() {
+                if (confirm('Czy na pewno chcesz usunąć wszystkie produkty z koszyka?')) {
+                    clearCart();
+                }
+            });
+
+            function updateQuantity(productId, quantity) {
+                $.ajax({
+                    url: '@Url.Action("UpdateQuantity", "Cart")',
+                    type: 'POST',
+                    data: { productId: productId, quantity: quantity },
+                    success: function(response) {
+                        if (response.success) {
+                            updateCartDisplay();
+                            showToast('Zaktualizowano ilość', 'success');
+                        } else {
+                            showToast(response.message, 'error');
+                            location.reload();
+                        }
+                    },
+                    error: function() {
+                        showToast('Wystąpił błąd podczas aktualizacji', 'error');
+                        location.reload();
+                    }
+                });
+            }
+
+            function removeItem(productId) {
+                $.ajax({
+                    url: '@Url.Action("RemoveItem", "Cart")',
+                    type: 'POST',
+                    data: { productId: productId },
+                    success: function(response) {
+                        if (response.success) {
+                            $(`tr[data-product-id="${productId}"]`).fadeOut(300, function() {
+                                $(this).remove();
+                                updateCartDisplay();
+                                
+                                // Jeśli koszyk jest pusty, przeładuj stronę
+                                if ($('tbody tr').length === 0) {
+                                    location.reload();
+                                }
+                            });
+                            showToast('Usunięto produkt z koszyka', 'success');
+                        } else {
+                            showToast(response.message, 'error');
+                        }
+                    },
+                    error: function() {
+                        showToast('Wystąpił błąd podczas usuwania', 'error');
+                    }
+                });
+            }
+
+            function clearCart() {
+                $.ajax({
+                    url: '@Url.Action("Clear", "Cart")',
+                    type: 'POST',
+                    success: function(response) {
+                        if (response.success) {
+                            location.reload();
+                        } else {
+                            showToast(response.message, 'error');
+                        }
+                    },
+                    error: function() {
+                        showToast('Wystąpił błąd podczas czyszczenia koszyka', 'error');
+                    }
+                });
+            }
+
+            function updateCartDisplay() {
+                $.ajax({
+                    url: '@Url.Action("GetCount", "Cart")',
+                    type: 'GET',
+                    success: function(count) {
+                        // Przelicz całkowity koszt i liczbę produktów
+                        var total = 0;
+                        var itemCount = 0;
+                        
+                        $('.quantity-input').each(function() {
+                            var quantity = parseInt($(this).val());
+                            var row = $(this).closest('tr');
+                            var priceText = row.find('td:eq(2) strong').text().replace(/[^\d,]/g, '').replace(',', '.');
+                            var price = parseFloat(priceText);
+                            var itemTotal = price * quantity;
+                            
+                            row.find('.item-total').text(itemTotal.toLocaleString('pl-PL', {style: 'currency', currency: 'PLN'}));
+                            total += itemTotal;
+                            itemCount += quantity;
+                        });
+                        
+                        $('#cart-total').text(total.toLocaleString('pl-PL', {style: 'currency', currency: 'PLN'}));
+                        $('#cart-items-count').text(itemCount);
+                        
+                        // Aktualizuj licznik w navbarze
+                        updateNavbarCartCount(count);
+                    }
+                });
+            }
+
+            function updateNavbarCartCount(count) {
+                var badge = $('#cart-count-badge');
+                if (count > 0) {
+                    badge.text(count).show();
+                } else {
+                    badge.hide();
+                }
+            }
+
+            function showToast(message, type) {
+                var bgClass = type === 'success' ? 'bg-success' : type === 'warning' ? 'bg-warning' : 'bg-danger';
+                var toast = $(`
+                    <div class="position-fixed top-0 end-0 p-3" style="z-index: 11; margin-top: 70px;">
+                        <div class="toast show ${bgClass} text-white" role="alert">
+                            <div class="toast-body">
+                                ${message}
+                            </div>
+                        </div>
+                    </div>
+                `);
+                
+                $('body').append(toast);
+                setTimeout(function() {
+                    toast.fadeOut(300, function() { $(this).remove(); });
+                }, 3000);
+            }
+        });
+    </script>
+}

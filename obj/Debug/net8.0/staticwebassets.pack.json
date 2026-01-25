@@ -13,6 +13,14 @@
       "PackagePath": "staticwebassets\\favicon.ico"
     },
     {
+      "Id": "C:\\Users\\lacek\\Desktop\\GlobalForge\\wwwroot\\images\\products\\5fc45d63-83c6-4f3e-96c1-1c4475493ec0_justdance.jpg",
+      "PackagePath": "staticwebassets\\images\\products\\5fc45d63-83c6-4f3e-96c1-1c4475493ec0_justdance.jpg"
+    },
+    {
+      "Id": "C:\\Users\\lacek\\Desktop\\GlobalForge\\wwwroot\\images\\products\\b2d6d6db-76b4-4e47-883d-b3a9a7c319a5_justdance.jpg",
+      "PackagePath": "staticwebassets\\images\\products\\b2d6d6db-76b4-4e47-883d-b3a9a7c319a5_justdance.jpg"
+    },
+    {
       "Id": "C:\\Users\\lacek\\Desktop\\GlobalForge\\wwwroot\\js\\site.js",
       "PackagePath": "staticwebassets\\js\\site.js"
     },

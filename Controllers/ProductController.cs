@@ -29,7 +29,7 @@ namespace GlobalForge.Web.Controllers
 
         // GET: /Product/Index - Katalog produktów
         [HttpGet]
-        public async Task<IActionResult> Index(int? categoryId, string? searchQuery)
+        public async Task<IActionResult> Index(int? categoryId, string? searchQuery, decimal? minPrice, decimal? maxPrice, List<string>? condition)
         {
             var productsQuery = _context.Products
                 .Include(p => p.Category)
@@ -50,6 +50,23 @@ namespace GlobalForge.Web.Controllers
                     p.Description.Contains(searchQuery));
             }
 
+            // Filtrowanie po cenie
+            if (minPrice.HasValue)
+            {
+                productsQuery = productsQuery.Where(p => p.Price >= minPrice.Value);
+            }
+
+            if (maxPrice.HasValue)
+            {
+                productsQuery = productsQuery.Where(p => p.Price <= maxPrice.Value);
+            }
+
+            // Filtrowanie po stanie (Nowy/Używany)
+            if (condition != null && condition.Any())
+            {
+                productsQuery = productsQuery.Where(p => condition.Contains(p.Condition));
+            }
+
             var products = await productsQuery
                 .OrderByDescending(p => p.CreatedAt)
                 .ToListAsync();
@@ -59,6 +76,10 @@ namespace GlobalForge.Web.Controllers
             ViewBag.Categories = categories;
             ViewBag.SelectedCategoryId = categoryId;
             ViewBag.SearchQuery = searchQuery;
+            ViewBag.MinPrice = minPrice;
+            ViewBag.MaxPrice = maxPrice;
+            ViewBag.ConditionNew = condition?.Contains("New") ?? false;
+            ViewBag.ConditionUsed = condition?.Contains("Used") ?? false;
 
             return View(products);
         }

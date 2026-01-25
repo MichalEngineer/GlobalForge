@@ -64,10 +64,32 @@
                 </div>
 
                 <div class="product-actions">
-                    <button class="btn-add-cart">
-                        <i class="bi bi-cart-plus"></i>
-                        Dodaj do koszyka
-                    </button>
+                    @if (Model.Quantity > 0)
+                    {
+                        <div class="quantity-selector mb-3">
+                            <label for="quantity" class="form-label">Ilość:</label>
+                            <div class="input-group" style="width: 150px;">
+                                <button class="btn btn-outline-secondary" type="button" id="btn-quantity-decrease">
+                                    <i class="bi bi-dash"></i>
+                                </button>
+                                <input type="number" class="form-control text-center" id="quantity" value="1" min="1" max="@Model.Quantity">
+                                <button class="btn btn-outline-secondary" type="button" id="btn-quantity-increase">
+                                    <i class="bi bi-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <button class="btn-add-cart" id="btn-add-to-cart" data-product-id="@Model.Id" data-max-quantity="@Model.Quantity">
+                            <i class="bi bi-cart-plus"></i>
+                            Dodaj do koszyka
+                        </button>
+                    }
+                    else
+                    {
+                        <button class="btn-add-cart" disabled style="background-color: #6c757d; cursor: not-allowed;">
+                            <i class="bi bi-x-circle"></i>
+                            Produkt niedostępny
+                        </button>
+                    }
                     <button class="btn-contact">
                         <i class="bi bi-envelope"></i>
                         Kontakt ze sprzedawcą
@@ -382,4 +404,111 @@
     }
 }
 </style>
+}
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            var maxQuantity = parseInt($('#btn-add-to-cart').data('max-quantity'));
+            
+            // Zwiększ ilość
+            $('#btn-quantity-increase').click(function() {
+                var input = $('#quantity');
+                var currentValue = parseInt(input.val());
+                if (currentValue < maxQuantity) {
+                    input.val(currentValue + 1);
+                }
+            });
+            
+            // Zmniejsz ilość
+            $('#btn-quantity-decrease').click(function() {
+                var input = $('#quantity');
+                var currentValue = parseInt(input.val());
+                if (currentValue > 1) {
+                    input.val(currentValue - 1);
+                }
+            });
+            
+            // Walidacja pola ilości
+            $('#quantity').change(function() {
+                var value = parseInt($(this).val());
+                if (isNaN(value) || value < 1) {
+                    $(this).val(1);
+                } else if (value > maxQuantity) {
+                    $(this).val(maxQuantity);
+                    showToast('Dostępne tylko ' + maxQuantity + ' sztuk', 'warning');
+                }
+            });
+            
+            // Dodaj do koszyka
+            $('#btn-add-to-cart').click(function() {
+                var productId = $(this).data('product-id');
+                var quantity = parseInt($('#quantity').val());
+                var button = $(this);
+                
+                // Wyłącz przycisk podczas przetwarzania
+                button.prop('disabled', true);
+                
+                $.ajax({
+                    url: '@Url.Action("AddToCart", "Cart")',
+                    type: 'POST',
+                    data: {
+                        productId: productId,
+                        quantity: quantity
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            showToast('Produkt dodany do koszyka!', 'success');
+                            updateCartCount();
+                            // Resetuj ilość do 1
+                            $('#quantity').val(1);
+                        } else {
+                            showToast(response.message, 'error');
+                        }
+                    },
+                    error: function() {
+                        showToast('Wystąpił błąd podczas dodawania do koszyka', 'error');
+                    },
+                    complete: function() {
+                        button.prop('disabled', false);
+                    }
+                });
+            });
+            
+            function updateCartCount() {
+                $.ajax({
+                    url: '@Url.Action("GetCount", "Cart")',
+                    type: 'GET',
+                    success: function(count) {
+                        var badge = $('#cart-count-badge');
+                        if (count > 0) {
+                            badge.text(count).show();
+                        } else {
+                            badge.hide();
+                        }
+                    }
+                });
+            }
+            
+            function showToast(message, type) {
+                var bgClass = type === 'success' ? 'bg-success' : type === 'warning' ? 'bg-warning' : 'bg-danger';
+                var icon = type === 'success' ? 'bi-check-circle-fill' : type === 'warning' ? 'bi-exclamation-triangle-fill' : 'bi-x-circle-fill';
+                
+                var toast = $(`
+                    <div class="position-fixed top-0 end-0 p-3" style="z-index: 9999; margin-top: 70px;">
+                        <div class="toast show ${bgClass} text-white" role="alert">
+                            <div class="toast-body">
+                                <i class="bi ${icon} me-2"></i>${message}
+                            </div>
+                        </div>
+                    </div>
+                `);
+                
+                $('body').append(toast);
+                setTimeout(function() {
+                    toast.fadeOut(300, function() { $(this).remove(); });
+                }, 3000);
+            }
+        });
+    </script>
 }

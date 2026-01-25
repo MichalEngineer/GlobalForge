@@ -133,6 +133,26 @@ body {
   align-items: center;
 }
 
+/* Cart Icon */
+.navbar-cart {
+  display: flex;
+  align-items: center;
+}
+
+.cart-link {
+  color: #4b5563;
+  padding: 8px 12px;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  position: relative;
+}
+
+.cart-link:hover {
+  background-color: #f3f4f6;
+  color: #42b983;
+}
+
 /* Profile Link */
 .navbar-profile {
   display: flex;
