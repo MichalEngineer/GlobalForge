@@ -1,0 +1,223 @@
+@model IEnumerable<GlobalForge.Web.Models.OrderItem>
+
+@{
+    ViewData["Title"] = "Sprzedane produkty";
+}
+
+<div class="container my-5">
+    <h1 class="mb-4">
+        <i class="bi bi-box-seam me-2"></i>Sprzedane produkty
+    </h1>
+
+    @if (Model.Any())
+    {
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Data</th>
+                                <th>Zamówienie</th>
+                                <th>Produkt</th>
+                                <th>Kupujący</th>
+                                <th class="text-center">Ilość</th>
+                                <th class="text-end">Kwota</th>
+                                <th>Status</th>
+                                <th class="text-center">Akcje</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>@item.Order.CreatedAt.ToString("dd.MM.yyyy")</td>
+                                    <td>
+                                        <strong>#@item.OrderId</strong>
+                                    </td>
+                                    <td>
+                                        <a asp-controller="Product" asp-action="Details" asp-route-id="@item.ProductId" class="text-decoration-none">
+                                            @item.Product.Name
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <i class="bi bi-person me-1"></i>
+                                        @item.Order.User.FirstName @item.Order.User.LastName
+                                    </td>
+                                    <td class="text-center">@item.Quantity</td>
+                                    <td class="text-end">@item.TotalPrice.ToString("C", new System.Globalization.CultureInfo("pl-PL"))</td>
+                                    <td>
+                                        @if (item.Order.Status == "Pending")
+                                        {
+                                            <span class="badge bg-warning text-dark">Oczekuje</span>
+                                        }
+                                        else if (item.Order.Status == "Processing")
+                                        {
+                                            <span class="badge bg-info">W realizacji</span>
+                                        }
+                                        else if (item.Order.Status == "Shipped")
+                                        {
+                                            <span class="badge bg-primary">Wysłane</span>
+                                        }
+                                        else if (item.Order.Status == "Delivered")
+                                        {
+                                            <span class="badge bg-success">Dostarczone</span>
+                                        }
+                                        else if (item.Order.Status == "Cancelled")
+                                        {
+                                            <span class="badge bg-danger">Anulowane</span>
+                                        }
+                                    </td>
+                                    <td class="text-center">
+                                        <button class="btn btn-sm btn-outline-primary" 
+                                                data-bs-toggle="modal" 
+                                                data-bs-target="#orderModal@item.OrderId">
+                                            <i class="bi bi-eye"></i>
+                                        </button>
+                                        <div class="btn-group" role="group">
+                                            <button type="button" 
+                                                    class="btn btn-sm btn-outline-success dropdown-toggle" 
+                                                    data-bs-toggle="dropdown">
+                                                Status
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                <li><a class="dropdown-item update-status" href="#" data-order-id="@item.OrderId" data-status="Processing">W realizacji</a></li>
+                                                <li><a class="dropdown-item update-status" href="#" data-order-id="@item.OrderId" data-status="Shipped">Wysłane</a></li>
+                                                <li><a class="dropdown-item update-status" href="#" data-order-id="@item.OrderId" data-status="Delivered">Dostarczone</a></li>
+                                            </ul>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <!-- Modal ze szczegółami -->
+                                <div class="modal fade" id="orderModal@item.OrderId" tabindex="-1">
+                                    <div class="modal-dialog modal-lg">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Szczegóły zamówienia #@item.OrderId</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <h6>Dane kupującego:</h6>
+                                                        <p class="mb-1"><strong>Imię i nazwisko:</strong> @item.Order.User.FirstName @item.Order.User.LastName</p>
+                                                        <p class="mb-1"><strong>Email:</strong> @item.Order.User.Email</p>
+                                                        <p class="mb-1"><strong>Telefon:</strong> @item.Order.User.PhoneNumber</p>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <h6>Adres dostawy:</h6>
+                                                        <pre>@item.Order.DeliveryAddress</pre>
+                                                    </div>
+                                                </div>
+                                                <hr>
+                                                <h6>Produkty w zamówieniu:</h6>
+                                                <table class="table table-sm">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Produkt</th>
+                                                            <th class="text-center">Ilość</th>
+                                                            <th class="text-end">Cena</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @foreach (var orderItem in item.Order.OrderItems)
+                                                        {
+                                                            <tr>
+                                                                <td>@orderItem.Product.Name</td>
+                                                                <td class="text-center">@orderItem.Quantity</td>
+                                                                <td class="text-end">@orderItem.TotalPrice.ToString("C", new System.Globalization.CultureInfo("pl-PL"))</td>
+                                                            </tr>
+                                                        }
+                                                    </tbody>
+                                                    <tfoot>
+                                                        <tr class="table-light">
+                                                            <th colspan="2" class="text-end">Razem:</th>
+                                                            <th class="text-end">@item.Order.TotalAmount.ToString("C", new System.Globalization.CultureInfo("pl-PL"))</th>
+                                                        </tr>
+                                                    </tfoot>
+                                                </table>
+                                                <p><strong>Metoda płatności:</strong> @item.Order.PaymentMethod</p>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Zamknij</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info text-center py-5">
+            <i class="bi bi-inbox" style="font-size: 3rem;"></i>
+            <h4 class="mt-3">Nie sprzedałeś jeszcze żadnych produktów</h4>
+            <p class="text-muted">Dodaj produkty do swojego sklepu, aby rozpocząć sprzedaż</p>
+            <a href="@Url.Action("Create", "Product")" class="btn btn-success mt-3">
+                <i class="bi bi-plus-circle me-1"></i>Dodaj produkt
+            </a>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            $('.update-status').click(function(e) {
+                e.preventDefault();
+                
+                var orderId = $(this).data('order-id');
+                var status = $(this).data('status');
+                var statusText = $(this).text();
+                
+                if (!confirm('Czy na pewno chcesz zmienić status zamówienia na "' + statusText + '"?')) {
+                    return;
+                }
+                
+                $.ajax({
+                    url: '@Url.Action("UpdateStatus", "Order")',
+                    type: 'POST',
+                    data: { orderId: orderId, status: status },
+                    success: function(response) {
+                        if (response.success) {
+                            showToast(response.message, 'success');
+                            setTimeout(function() {
+                                location.reload();
+                            }, 1500);
+                        } else {
+                            showToast(response.message, 'error');
+                        }
+                    },
+                    error: function() {
+                        showToast('Wystąpił błąd podczas aktualizacji statusu', 'error');
+                    }
+                });
+            });
+            
+            function showToast(message, type) {
+                var bgClass = type === 'success' ? 'bg-success' : 'bg-danger';
+                var icon = type === 'success' ? 'bi-check-circle-fill' : 'bi-x-circle-fill';
+                
+                var toast = $(`
+                    <div class="position-fixed top-0 end-0 p-3" style="z-index: 9999; margin-top: 70px;">
+                        <div class="toast show ${bgClass} text-white" role="alert">
+                            <div class="toast-body">
+                                <i class="bi ${icon} me-2"></i>${message}
+                            </div>
+                        </div>
+                    </div>
+                `);
+                
+                $('body').append(toast);
+                setTimeout(function() {
+                    toast.fadeOut(300, function() { $(this).remove(); });
+                }, 3000);
+            }
+        });
+    </script>
+}

@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("GlobalForge.Web")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+47a1efab1cf0f513ae82c0708e9134a2e44d78ab")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e09dd6e056d813af00ef4f2eab2fbfea59bbb399")]
 [assembly: System.Reflection.AssemblyProductAttribute("GlobalForge.Web")]
 [assembly: System.Reflection.AssemblyTitleAttribute("GlobalForge.Web")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

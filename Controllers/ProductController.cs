@@ -315,5 +315,72 @@ namespace GlobalForge.Web.Controllers
                 System.IO.File.Delete(imagePath);
             }
         }
+
+        // POST: /Product/SubmitReview - Dodawanie recenzji
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> SubmitReview(int productId, int rating, string comment)
+        {
+            try
+            {
+                var userName = User.Identity?.Name;
+                if (string.IsNullOrEmpty(userName))
+                {
+                    return Json(new { success = false, message = "Musisz być zalogowany, aby dodać recenzję" });
+                }
+
+                var user = await _userManager.GetUserAsync(User);
+                if (user == null)
+                {
+                    return Json(new { success = false, message = "Nie znaleziono użytkownika" });
+                }
+
+                var product = await _context.Products.FindAsync(productId);
+                if (product == null)
+                {
+                    return Json(new { success = false, message = "Nie znaleziono produktu" });
+                }
+
+                // Sprawdź czy użytkownik kupił ten produkt
+                var hasPurchased = await _context.OrderItems
+                    .Include(oi => oi.Order)
+                    .AnyAsync(oi => oi.ProductId == productId && oi.Order.UserId == user.Id);
+
+                if (!hasPurchased)
+                {
+                    return Json(new { success = false, message = "Możesz wystawić recenzję tylko dla zakupionych produktów" });
+                }
+
+                // Sprawdź czy użytkownik już nie wystawił recenzji
+                var existingReview = await _context.Reviews
+                    .FirstOrDefaultAsync(r => r.ProductId == productId && r.UserId == user.Id);
+
+                if (existingReview != null)
+                {
+                    return Json(new { success = false, message = "Już wystawiłeś recenzję dla tego produktu" });
+                }
+
+                var review = new Review
+                {
+                    ProductId = productId,
+                    UserId = user.Id,
+                    Rating = rating,
+                    Comment = comment,
+                    CreatedAt = DateTime.Now
+                };
+
+                _context.Reviews.Add(review);
+                await _context.SaveChangesAsync();
+
+                _logger.LogInformation($"Dodano recenzję dla produktu {productId} przez użytkownika {userName}");
+
+                return Json(new { success = true, message = "Dziękujemy za wystawienie recenzji!" });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Błąd podczas dodawania recenzji");
+                return Json(new { success = false, message = "Wystąpił błąd podczas dodawania recenzji" });
+            }
+        }
     }
 }

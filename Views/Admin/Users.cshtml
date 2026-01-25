@@ -1,0 +1,145 @@
+@model IEnumerable<GlobalForge.Web.Models.User>
+
+@{
+    ViewData["Title"] = "Zarządzanie użytkownikami";
+}
+
+<div class="container my-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1><i class="bi bi-people me-2"></i>Zarządzanie użytkownikami</h1>
+        <a asp-action="Index" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-1"></i>Powrót do panelu
+        </a>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th>ID</th>
+                            <th>Imię i nazwisko</th>
+                            <th>Email</th>
+                            <th>Telefon</th>
+                            <th>Data rejestracji</th>
+                            <th>Status</th>
+                            <th class="text-center">Akcje</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var user in Model)
+                        {
+                            var isLocked = user.LockoutEnd.HasValue && user.LockoutEnd.Value > DateTimeOffset.Now;
+                            
+                            <tr data-user-id="@user.Id">
+                                <td><small class="text-muted">@user.Id.Substring(0, 8)...</small></td>
+                                <td>@user.FirstName @user.LastName</td>
+                                <td>@user.Email</td>
+                                <td>@(user.PhoneNumber ?? "-")</td>
+                                <td>@user.CreatedAt.ToString("dd.MM.yyyy")</td>
+                                <td>
+                                    @if (isLocked)
+                                    {
+                                        <span class="badge bg-danger">Zablokowany</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-success">Aktywny</span>
+                                    }
+                                </td>
+                                <td class="text-center">
+                                    <button class="btn btn-sm btn-warning toggle-user-status" data-user-id="@user.Id">
+                                        <i class="bi @(isLocked ? "bi-unlock" : "bi-lock")"></i>
+                                        @(isLocked ? "Odblokuj" : "Zablokuj")
+                                    </button>
+                                    <button class="btn btn-sm btn-danger delete-user" data-user-id="@user.Id" data-user-name="@user.Email">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            $('.toggle-user-status').click(function() {
+                var userId = $(this).data('user-id');
+                var button = $(this);
+                
+                $.ajax({
+                    url: '@Url.Action("ToggleUserStatus", "Admin")',
+                    type: 'POST',
+                    data: { userId: userId },
+                    success: function(response) {
+                        if (response.success) {
+                            showToast(response.message, 'success');
+                            setTimeout(function() {
+                                location.reload();
+                            }, 1500);
+                        } else {
+                            showToast(response.message, 'error');
+                        }
+                    },
+                    error: function() {
+                        showToast('Wystąpił błąd', 'error');
+                    }
+                });
+            });
+            
+            $('.delete-user').click(function() {
+                var userId = $(this).data('user-id');
+                var userName = $(this).data('user-name');
+                
+                if (!confirm('Czy na pewno chcesz usunąć użytkownika ' + userName + '? Ta operacja jest nieodwracalna.')) {
+                    return;
+                }
+                
+                $.ajax({
+                    url: '@Url.Action("DeleteUser", "Admin")',
+                    type: 'POST',
+                    data: { userId: userId },
+                    success: function(response) {
+                        if (response.success) {
+                            showToast(response.message, 'success');
+                            setTimeout(function() {
+                                location.reload();
+                            }, 1500);
+                        } else {
+                            showToast(response.message, 'error');
+                        }
+                    },
+                    error: function() {
+                        showToast('Wystąpił błąd', 'error');
+                    }
+                });
+            });
+            
+            function showToast(message, type) {
+                var bgClass = type === 'success' ? 'bg-success' : 'bg-danger';
+                var icon = type === 'success' ? 'bi-check-circle-fill' : 'bi-x-circle-fill';
+                
+                var toast = $(`
+                    <div class="position-fixed top-0 end-0 p-3" style="z-index: 9999; margin-top: 70px;">
+                        <div class="toast show ${bgClass} text-white" role="alert">
+                            <div class="toast-body">
+                                <i class="bi ${icon} me-2"></i>${message}
+                            </div>
+                        </div>
+                    </div>
+                `);
+                
+                $('body').append(toast);
+                setTimeout(function() {
+                    toast.fadeOut(300, function() { $(this).remove(); });
+                }, 3000);
+            }
+        });
+    </script>
+}

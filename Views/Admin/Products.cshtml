@@ -1,0 +1,158 @@
+@model IEnumerable<GlobalForge.Web.Models.Product>
+
+@{
+    ViewData["Title"] = "Zarządzanie produktami";
+}
+
+<div class="container my-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1><i class="bi bi-box-seam me-2"></i>Zarządzanie produktami</h1>
+        <a asp-action="Index" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-1"></i>Powrót do panelu
+        </a>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Zdjęcie</th>
+                            <th>Nazwa</th>
+                            <th>Kategoria</th>
+                            <th>Sprzedawca</th>
+                            <th class="text-end">Cena</th>
+                            <th class="text-center">Stan</th>
+                            <th>Status</th>
+                            <th class="text-center">Akcje</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var product in Model)
+                        {
+                            <tr data-product-id="@product.Id">
+                                <td>
+                                    @if (!string.IsNullOrEmpty(product.ImageUrl))
+                                    {
+                                        <img src="@product.ImageUrl" alt="@product.Name" class="img-thumbnail" style="width: 60px; height: 60px; object-fit: cover;">
+                                    }
+                                    else
+                                    {
+                                        <div class="bg-light d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                                            <i class="bi bi-image text-muted"></i>
+                                        </div>
+                                    }
+                                </td>
+                                <td>
+                                    <a asp-controller="Product" asp-action="Details" asp-route-id="@product.Id" class="text-decoration-none">
+                                        @product.Name
+                                    </a>
+                                </td>
+                                <td>@product.Category.Name</td>
+                                <td>@product.Seller.FirstName @product.Seller.LastName</td>
+                                <td class="text-end">@product.Price.ToString("C", new System.Globalization.CultureInfo("pl-PL"))</td>
+                                <td class="text-center">@product.Quantity szt.</td>
+                                <td>
+                                    @if (product.IsActive)
+                                    {
+                                        <span class="badge bg-success">Aktywny</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary">Nieaktywny</span>
+                                    }
+                                </td>
+                                <td class="text-center">
+                                    <button class="btn btn-sm btn-warning toggle-product-status" data-product-id="@product.Id">
+                                        <i class="bi @(product.IsActive ? "bi-eye-slash" : "bi-eye")"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-danger delete-product" data-product-id="@product.Id" data-product-name="@product.Name">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            $('.toggle-product-status').click(function() {
+                var productId = $(this).data('product-id');
+                
+                $.ajax({
+                    url: '@Url.Action("ToggleProductStatus", "Admin")',
+                    type: 'POST',
+                    data: { productId: productId },
+                    success: function(response) {
+                        if (response.success) {
+                            showToast(response.message, 'success');
+                            setTimeout(function() {
+                                location.reload();
+                            }, 1500);
+                        } else {
+                            showToast(response.message, 'error');
+                        }
+                    },
+                    error: function() {
+                        showToast('Wystąpił błąd', 'error');
+                    }
+                });
+            });
+            
+            $('.delete-product').click(function() {
+                var productId = $(this).data('product-id');
+                var productName = $(this).data('product-name');
+                
+                if (!confirm('Czy na pewno chcesz usunąć produkt "' + productName + '"?')) {
+                    return;
+                }
+                
+                $.ajax({
+                    url: '@Url.Action("DeleteProduct", "Admin")',
+                    type: 'POST',
+                    data: { productId: productId },
+                    success: function(response) {
+                        if (response.success) {
+                            showToast(response.message, 'success');
+                            setTimeout(function() {
+                                location.reload();
+                            }, 1500);
+                        } else {
+                            showToast(response.message, 'error');
+                        }
+                    },
+                    error: function() {
+                        showToast('Wystąpił błąd', 'error');
+                    }
+                });
+            });
+            
+            function showToast(message, type) {
+                var bgClass = type === 'success' ? 'bg-success' : 'bg-danger';
+                var icon = type === 'success' ? 'bi-check-circle-fill' : 'bi-x-circle-fill';
+                
+                var toast = $(`
+                    <div class="position-fixed top-0 end-0 p-3" style="z-index: 9999; margin-top: 70px;">
+                        <div class="toast show ${bgClass} text-white" role="alert">
+                            <div class="toast-body">
+                                <i class="bi ${icon} me-2"></i>${message}
+                            </div>
+                        </div>
+                    </div>
+                `);
+                
+                $('body').append(toast);
+                setTimeout(function() {
+                    toast.fadeOut(300, function() { $(this).remove(); });
+                }, 3000);
+            }
+        });
+    </script>
+}

@@ -19,8 +19,14 @@
                         <a asp-action="ChangePassword" class="profile-menu-item">
                             <i class="bi bi-key"></i> Zmiana hasła
                         </a>
+                        <a asp-controller="Order" asp-action="MyOrders" class="profile-menu-item">
+                            <i class="bi bi-bag-check"></i> Moje zamówienia
+                        </a>
                         <a asp-controller="Product" asp-action="MyProducts" class="profile-menu-item">
                             <i class="bi bi-shop-window"></i> Moje produkty
+                        </a>
+                        <a asp-controller="Order" asp-action="SoldOrders" class="profile-menu-item">
+                            <i class="bi bi-box-seam"></i> Sprzedane produkty
                         </a>
                     </div>
                 </div>

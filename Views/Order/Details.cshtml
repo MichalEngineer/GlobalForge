@@ -1,0 +1,293 @@
+@model GlobalForge.Web.Models.Order
+
+@{
+    ViewData["Title"] = $"Zamówienie #{Model.Id}";
+}
+
+<div class="container my-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1><i class="bi bi-receipt me-2"></i>Zamówienie #@Model.Id</h1>
+        <a asp-action="MyOrders" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-1"></i>Powrót do listy
+        </a>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">Szczegóły zamówienia</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <small class="text-muted">Data zamówienia</small>
+                            <p class="mb-0"><strong>@Model.CreatedAt.ToString("dd.MM.yyyy HH:mm")</strong></p>
+                        </div>
+                        <div class="col-md-6">
+                            <small class="text-muted">Status</small>
+                            <p class="mb-0">
+                                @if (Model.Status == "Pending")
+                                {
+                                    <span class="badge bg-warning text-dark fs-6">Oczekuje</span>
+                                }
+                                else if (Model.Status == "Processing")
+                                {
+                                    <span class="badge bg-info fs-6">W realizacji</span>
+                                }
+                                else if (Model.Status == "Shipped")
+                                {
+                                    <span class="badge bg-primary fs-6">Wysłane</span>
+                                }
+                                else if (Model.Status == "Delivered")
+                                {
+                                    <span class="badge bg-success fs-6">Dostarczone</span>
+                                }
+                                else if (Model.Status == "Cancelled")
+                                {
+                                    <span class="badge bg-danger fs-6">Anulowane</span>
+                                }
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <hr>
+                    
+                    <h6 class="mb-3">Zamówione produkty</h6>
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Produkt</th>
+                                    <th>Sprzedawca</th>
+                                    <th class="text-center">Ilość</th>
+                                    <th class="text-end">Cena jedn.</th>
+                                    <th class="text-end">Razem</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.OrderItems)
+                                {
+                                    <tr>
+                                        <td>
+                                            <a asp-controller="Product" asp-action="Details" asp-route-id="@item.ProductId" class="text-decoration-none fw-semibold">
+                                                @item.Product.Name
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <i class="bi bi-person me-1"></i>@item.Product.Seller.FirstName @item.Product.Seller.LastName
+                                        </td>
+                                        <td class="text-center">@item.Quantity</td>
+                                        <td class="text-end">@item.UnitPrice.ToString("C", new System.Globalization.CultureInfo("pl-PL"))</td>
+                                        <td class="text-end fw-semibold">@item.TotalPrice.ToString("C", new System.Globalization.CultureInfo("pl-PL"))</td>
+                                    </tr>
+                                    @if (Model.Status == "Delivered")
+                                    {
+                                        <tr>
+                                            <td colspan="5">
+                                                <button class="btn btn-sm btn-outline-success btn-add-review" 
+                                                        data-product-id="@item.ProductId" 
+                                                        data-product-name="@item.Product.Name">
+                                                    <i class="bi bi-star me-1"></i>Wystaw opinię
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0"><i class="bi bi-truck me-2"></i>Dostawa</h5>
+                </div>
+                <div class="card-body">
+                    <small class="text-muted">Adres dostawy</small>
+                    <pre class="mb-3">@Model.DeliveryAddress</pre>
+                    
+                    <small class="text-muted">Metoda dostawy</small>
+                    <p class="mb-0">@Model.DeliveryMethod</p>
+                </div>
+            </div>
+
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0"><i class="bi bi-wallet2 me-2"></i>Płatność</h5>
+                </div>
+                <div class="card-body">
+                    <small class="text-muted">Metoda płatności</small>
+                    <p class="mb-3">@Model.PaymentMethod</p>
+                    
+                    <hr>
+                    
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Wartość produktów:</span>
+                        <span>@Model.TotalAmount.ToString("C", new System.Globalization.CultureInfo("pl-PL"))</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Dostawa:</span>
+                        <span class="text-success">Gratis</span>
+                    </div>
+                    
+                    <hr>
+                    
+                    <div class="d-flex justify-content-between">
+                        <h5>Razem:</h5>
+                        <h5 class="text-success">@Model.TotalAmount.ToString("C", new System.Globalization.CultureInfo("pl-PL"))</h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal do dodawania recenzji -->
+<div class="modal fade" id="reviewModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Wystaw opinię</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p id="review-product-name" class="fw-semibold mb-3"></p>
+                <div class="mb-3">
+                    <label class="form-label">Ocena <span class="text-danger">*</span></label>
+                    <div class="rating-stars">
+                        <i class="bi bi-star rating-star" data-rating="1"></i>
+                        <i class="bi bi-star rating-star" data-rating="2"></i>
+                        <i class="bi bi-star rating-star" data-rating="3"></i>
+                        <i class="bi bi-star rating-star" data-rating="4"></i>
+                        <i class="bi bi-star rating-star" data-rating="5"></i>
+                    </div>
+                    <input type="hidden" id="rating-value" value="0">
+                </div>
+                <div class="mb-3">
+                    <label for="review-comment" class="form-label">Opinia (opcjonalnie)</label>
+                    <textarea class="form-control" id="review-comment" rows="4" maxlength="1000" placeholder="Podziel się swoją opinią..."></textarea>
+                    <small class="text-muted">Maksymalnie 1000 znaków</small>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Anuluj</button>
+                <button type="button" class="btn btn-success" id="btn-submit-review">Wyślij opinię</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        var currentProductId = 0;
+        
+        $(document).ready(function() {
+            $('.btn-add-review').click(function() {
+                currentProductId = $(this).data('product-id');
+                var productName = $(this).data('product-name');
+                
+                $('#review-product-name').text('Produkt: ' + productName);
+                $('#rating-value').val(0);
+                $('#review-comment').val('');
+                $('.rating-star').removeClass('bi-star-fill').addClass('bi-star');
+                
+                $('#reviewModal').modal('show');
+            });
+            
+            $('.rating-star').click(function() {
+                var rating = $(this).data('rating');
+                $('#rating-value').val(rating);
+                
+                $('.rating-star').each(function(index) {
+                    if (index < rating) {
+                        $(this).removeClass('bi-star').addClass('bi-star-fill');
+                    } else {
+                        $(this).removeClass('bi-star-fill').addClass('bi-star');
+                    }
+                });
+            });
+            
+            $('#btn-submit-review').click(function() {
+                var rating = parseInt($('#rating-value').val());
+                var comment = $('#review-comment').val();
+                
+                if (rating === 0) {
+                    alert('Proszę wybrać ocenę (gwiazdki)');
+                    return;
+                }
+                
+                var button = $(this);
+                button.prop('disabled', true);
+                button.html('<span class="spinner-border spinner-border-sm me-2"></span>Wysyłanie...');
+                
+                $.ajax({
+                    url: '@Url.Action("SubmitReview", "Product")',
+                    type: 'POST',
+                    data: {
+                        productId: currentProductId,
+                        rating: rating,
+                        comment: comment
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            showToast(response.message, 'success');
+                            $('#reviewModal').modal('hide');
+                            setTimeout(function() {
+                                location.reload();
+                            }, 1500);
+                        } else {
+                            showToast(response.message, 'error');
+                            button.prop('disabled', false);
+                            button.html('Wyślij opinię');
+                        }
+                    },
+                    error: function() {
+                        showToast('Wystąpił błąd podczas wysyłania recenzji', 'error');
+                        button.prop('disabled', false);
+                        button.html('Wyślij opinię');
+                    }
+                });
+            });
+            
+            function showToast(message, type) {
+                var bgClass = type === 'success' ? 'bg-success' : 'bg-danger';
+                var icon = type === 'success' ? 'bi-check-circle-fill' : 'bi-x-circle-fill';
+                
+                var toast = $(`
+                    <div class="position-fixed top-0 end-0 p-3" style="z-index: 9999; margin-top: 70px;">
+                        <div class="toast show ${bgClass} text-white" role="alert">
+                            <div class="toast-body">
+                                <i class="bi ${icon} me-2"></i>${message}
+                            </div>
+                        </div>
+                    </div>
+                `);
+                
+                $('body').append(toast);
+                setTimeout(function() {
+                    toast.fadeOut(300, function() { $(this).remove(); });
+                }, 3000);
+            }
+        });
+    </script>
+    
+    <style>
+        .rating-stars {
+            font-size: 2rem;
+            color: #fbbf24;
+            cursor: pointer;
+        }
+        
+        .rating-star {
+            transition: all 0.2s;
+        }
+        
+        .rating-star:hover {
+            transform: scale(1.2);
+        }
+    </style>
+}
